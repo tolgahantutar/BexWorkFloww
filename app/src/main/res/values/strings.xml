@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">BexWorkFloww</string>
+    <string name="bexlogo">bexlogo</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="button_login">Login</string>
+    <string name="button_cancel">Cancel</string>
+</resources>
