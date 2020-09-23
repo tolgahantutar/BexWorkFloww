@@ -48,7 +48,7 @@ private fun loginUser(){
         try{
 val authResponse = viewModel.userLogin(SessionID,AuthorityID,userName,password,LoginType)
 
-            if(authResponse.Result){
+            if(authResponse.Result==true){
                 Toast.makeText(applicationContext, "Login Successfull!", Toast.LENGTH_LONG).show()
             }else{
                 Toast.makeText(applicationContext, "Login Failed!!", Toast.LENGTH_LONG).show()

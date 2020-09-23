@@ -1,25 +1,28 @@
 package com.tolgahantutar.bexworkfloww.data.models
 
 import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 
+@JsonClass(generateAdapter = true)
 data class AuthorizeSessionModel(
-    @SerializedName("UserID")
+    @Json(name="UserID")
     var UserID: Int,
-    @SerializedName("DatePasswordChanged")
+    @Json(name="DatePasswordChanged")
     var DatePasswordChanged: String,
-    @SerializedName("ForceToChangePassword")
+    @Json(name="ForceToChangePassword")
     var ForceToChangePassword: String,
-    @SerializedName("LoginType")
+    @Json(name="LoginType")
     var LoginType: String,
-    @SerializedName("UserName")
+    @Json(name="UserName")
     var UserName: String,
-    @SerializedName("IsActive")
+    @Json(name="IsActive")
     var IsActive: Boolean,
-    @SerializedName("UserFirstName")
+    @Json(name="UserFirstName")
     var UserFirstName: String,
-    @SerializedName("UserLastName")
+    @Json(name="UserLastName")
     var UserLastName: String,
-    @SerializedName("ID")
+    @Json(name="ID")
     var ID: Int
 )
