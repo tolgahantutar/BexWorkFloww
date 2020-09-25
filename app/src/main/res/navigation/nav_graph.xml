@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.tolgahantutar.bexworkfloww.ui.home.profile.ProfileFragment"
+        android:name="com.tolgahantutar.bexworkfloww.ui.profile.ProfileFragment"
         android:label="Profil"
         tools:layout="@layout/profile_fragment" />
     <fragment
         android:id="@+id/fragmentAdressBook"
-        android:name="com.tolgahantutar.bexworkfloww.ui.AdressBookFragment"
+        android:name="com.tolgahantutar.bexworkfloww.ui.addressbook.AdressBookFragment"
         android:label="Adres Defteri"
         tools:layout="@layout/adress_book_fragment" />
 </navigation>

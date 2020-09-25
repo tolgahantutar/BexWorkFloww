@@ -1,13 +1,12 @@
-package com.tolgahantutar.bexworkfloww.data.network
+package com.tolgahantutar.bexworkfloww.data.network.apis
 
-import com.google.gson.GsonBuilder
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.tolgahantutar.bexworkfloww.data.network.responses.AuthorizeSessionResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -26,7 +25,7 @@ suspend fun userLogin(
 ):Response<AuthorizeSessionResponse>
 
 companion object{
-operator fun invoke():VisaServicesApi{
+operator fun invoke(): VisaServicesApi {
     val logging = HttpLoggingInterceptor()
     logging.setLevel(HttpLoggingInterceptor.Level.BODY)
     val okHttpClient = OkHttpClient.Builder().addInterceptor(logging).build()

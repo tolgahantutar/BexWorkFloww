@@ -1,4 +1,4 @@
-package com.tolgahantutar.bexworkfloww.ui
+package com.tolgahantutar.bexworkfloww.ui.addressbook
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -11,7 +11,8 @@ import com.tolgahantutar.bexworkfloww.R
 class AdressBookFragment : Fragment() {
 
     companion object {
-        fun newInstance() = AdressBookFragment()
+        fun newInstance() =
+            AdressBookFragment()
     }
 
     private lateinit var viewModel: AdressBookViewModel

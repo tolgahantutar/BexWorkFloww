@@ -1,4 +1,4 @@
-package com.tolgahantutar.bexworkfloww.ui.home.profile
+package com.tolgahantutar.bexworkfloww.ui.profile
 
 import androidx.lifecycle.ViewModel
 

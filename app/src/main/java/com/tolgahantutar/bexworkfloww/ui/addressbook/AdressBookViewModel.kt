@@ -1,4 +1,4 @@
-package com.tolgahantutar.bexworkfloww.ui
+package com.tolgahantutar.bexworkfloww.ui.addressbook
 
 import androidx.lifecycle.ViewModel
 

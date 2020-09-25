@@ -1,4 +1,4 @@
-package com.tolgahantutar.bexworkfloww.data.network
+package com.tolgahantutar.bexworkfloww.data.network.responses
 
 import com.google.gson.annotations.SerializedName
 import com.squareup.moshi.Json

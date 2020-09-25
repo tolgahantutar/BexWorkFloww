@@ -1,8 +1,8 @@
 package com.tolgahantutar.bexworkfloww.data.network.repositories
 
-import com.tolgahantutar.bexworkfloww.data.network.AuthorizeSessionResponse
+import com.tolgahantutar.bexworkfloww.data.network.responses.AuthorizeSessionResponse
 import com.tolgahantutar.bexworkfloww.data.network.SafeApiRequest
-import com.tolgahantutar.bexworkfloww.data.network.VisaServicesApi
+import com.tolgahantutar.bexworkfloww.data.network.apis.VisaServicesApi
 
 class AuthorizeSessionRepository(
     private val api : VisaServicesApi
