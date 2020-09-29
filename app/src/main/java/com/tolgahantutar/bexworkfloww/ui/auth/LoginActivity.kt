@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tolgahantutar.bexworkfloww.R
+import com.tolgahantutar.bexworkfloww.data.network.responses.AuthorizeSessionResponse
 import com.tolgahantutar.bexworkfloww.databinding.ActivityLoginBinding
 import com.tolgahantutar.bexworkfloww.ui.home.HomeActivity
 import com.tolgahantutar.bexworkfloww.util.ApiException
@@ -31,66 +33,29 @@ class LoginActivity : AppCompatActivity(), KodeinAware {
 
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_login)
         authViewModel = ViewModelProvider(this,authViewModelFactory).get(AuthViewModel::class.java)
         getDomainViewModel = ViewModelProvider(this,getDomainViewModelFactory).get(GetDomainViewModel::class.java)
-        getDomain()
-binding.buttonLogin.setOnClickListener{
-   progress_bar.visibility = View.VISIBLE
-loginUser()
-
-}
-    }
-private fun loginUser(){
-
-    val SessionID = 0
-    val AuthorityID = 0
-    val userName =binding.editTextUsername.text.toString().trim()
-    val password = binding.editTextPassword.text.toString().trim()
-    val LoginType = "System"
-
-
-    lifecycleScope.launch {
-
-        try{
-val authResponse = authViewModel.userLogin(SessionID,AuthorityID,userName,password,LoginType)
-
-            if(authResponse.Result==true){
-                progress_bar.visibility = View.INVISIBLE
-                val intent = Intent(this@LoginActivity,
-                    HomeActivity::class.java)
-                startActivity(intent)
+        binding.viewmodel=authViewModel
+        authViewModel.isLoading.observe(this, Observer {
+            if (it){
+                progress_bar.visibility = View.VISIBLE
             }else{
                 progress_bar.visibility = View.INVISIBLE
-                Toast.makeText(applicationContext, "Login Failed!!", Toast.LENGTH_LONG).show()
             }
-        }catch (e: ApiException){
-            e.printStackTrace()
-        }catch (e: NoInternetException){
-            e.printStackTrace()
-        }
-    }
-
-
-}
-    private fun getDomain(){
-        val Location = "bexfatest.saasteknoloji.com"
-        lifecycleScope.launch {
-            try{
-                val domainResponse= getDomainViewModel.getDomain(Location)
-                if(domainResponse.Result==true){
-                    Toast.makeText(applicationContext, domainResponse.getDomainModel.ApiKey, Toast.LENGTH_LONG).show()
-                }else{
-                    Toast.makeText(applicationContext, "ApiKey isteği başarısız!", Toast.LENGTH_SHORT).show()
-                }
-            }catch (e:ApiException){
-                e.printStackTrace()
-            }catch (e:NoInternetException){
-                e.printStackTrace()
+        })
+        getDomainViewModel.getDomain()
+        getDomainViewModel.domainResult.observe(this, Observer {
+            if(it){
+                getDomainViewModel.domainApiKey.observe(this, Observer {
+                    Toast.makeText(this, getDomainViewModel.domainApiKey.value, Toast.LENGTH_LONG).show()
+                })
             }
-        }
+        })
+
     }
 }

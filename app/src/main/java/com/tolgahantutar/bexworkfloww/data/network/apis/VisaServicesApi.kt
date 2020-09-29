@@ -1,5 +1,7 @@
 package com.tolgahantutar.bexworkfloww.data.network.apis
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.tolgahantutar.bexworkfloww.data.network.responses.AuthorizeSessionResponse
@@ -22,7 +24,7 @@ suspend fun userLogin(
     @Field("UserName") UserName: String,
     @Field("Password") Password: String,
     @Field("LoginType") LoginType: String
-):Response<AuthorizeSessionResponse>
+): Response<AuthorizeSessionResponse>
 
 companion object{
 operator fun invoke(): VisaServicesApi {
