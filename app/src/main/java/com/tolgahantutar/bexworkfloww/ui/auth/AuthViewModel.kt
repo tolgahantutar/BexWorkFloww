@@ -7,18 +7,26 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tolgahantutar.bexworkfloww.data.network.repositories.AuthorizeSessionRepository
+import com.tolgahantutar.bexworkfloww.data.network.repositories.GetDomainRepository
 import com.tolgahantutar.bexworkfloww.ui.home.HomeActivity
 import com.tolgahantutar.bexworkfloww.util.ApiException
 import com.tolgahantutar.bexworkfloww.util.NoInternetException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 class AuthViewModel (
-    private val repository: AuthorizeSessionRepository
+    //private val repository: AuthorizeSessionRepository
 
 ):ViewModel() {
+lateinit var authorizeSessionRepository: AuthorizeSessionRepository
+    lateinit var getDomainRepository: GetDomainRepository
 
+    @Inject constructor(authorizeSessionRepository: AuthorizeSessionRepository,getDomainRepository: GetDomainRepository) : this(){
+       this.authorizeSessionRepository=authorizeSessionRepository
+        this.getDomainRepository=getDomainRepository
+    }
 
    var userName :String?=null
     var password: String ? = null
@@ -54,12 +62,32 @@ class AuthViewModel (
             }
         }
 }
-
 suspend fun userLogin(
 SessionID : Int,
 AuthorityID: Int,
 UserName: String,
 Password : String,
 LoginType: String
-)= withContext(Dispatchers.IO){repository.userLogin(SessionID, AuthorityID, UserName, Password, LoginType)}
+)= withContext(Dispatchers.IO){authorizeSessionRepository.userLogin(SessionID, AuthorityID, UserName, Password, LoginType)}
+
+    val domainResult = MutableLiveData<Boolean>()
+    val domainApiKey = MutableLiveData<String?>()
+
+    fun getDomain(){
+        val location = "bexfatest.saasteknoloji.com"
+        viewModelScope.launch {
+            try{
+                val domainResponse=getDomain(location)
+                domainResult.value = domainResponse.Result
+                domainApiKey.value = domainResponse.getDomainModel.ApiKey
+            }catch (e: ApiException){
+                e.printStackTrace()
+            }catch (e: NoInternetException){
+                e.printStackTrace()
+            }
+        }
+    }
+    suspend fun getDomain(
+        Location: String
+    )= withContext(Dispatchers.IO){getDomainRepository.getDomain(Location)}
 }

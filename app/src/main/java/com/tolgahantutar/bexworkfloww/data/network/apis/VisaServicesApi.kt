@@ -26,7 +26,7 @@ suspend fun userLogin(
     @Field("LoginType") LoginType: String
 ): Response<AuthorizeSessionResponse>
 
-companion object{
+ companion object{
 operator fun invoke(): VisaServicesApi {
     val logging = HttpLoggingInterceptor()
     logging.setLevel(HttpLoggingInterceptor.Level.BODY)

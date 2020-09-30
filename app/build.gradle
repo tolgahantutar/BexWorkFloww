@@ -26,6 +26,9 @@ android {
 dataBinding{
     enabled = true
 }
+    kapt {
+        generateStubs = true
+    }
 }
 
 dependencies {
@@ -94,4 +97,8 @@ dependencies {
 
     //LiveData
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0-alpha03'
+
+    //Dagger2
+    implementation 'com.google.dagger:dagger:2.29.1'
+    kapt 'com.google.dagger:dagger-compiler:2.29.1'
 }
