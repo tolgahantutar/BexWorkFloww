@@ -4,6 +4,8 @@ package com.tolgahantutar.bexworkfloww.ui.auth
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -50,6 +52,14 @@ class LoginActivity : AppCompatActivity(){
                 })
             }
         })
+        val crashButton = Button(this)
+        crashButton.text = "Crash!"
+        crashButton.setOnClickListener {
+            throw RuntimeException("Test Crash") // Force a crash
+        }
 
+        addContentView(crashButton, ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT))
     }
 }

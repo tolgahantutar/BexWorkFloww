@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "618461897298",
+    "firebase_url": "https://bexfaworkflow.firebaseio.com",
+    "project_id": "bexfaworkflow",
+    "storage_bucket": "bexfaworkflow.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618461897298:android:128820374f04727370f58b",
+        "android_client_info": {
+          "package_name": "com.tolgahantutar.bexworkfloww"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "618461897298-qs7gdam4l3gk8j9fet9tab30gd92kf3b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tolgahantutar.bexworkfloww",
+            "certificate_hash": "55b61dab4aac66d7ed0d218118dfff0689f94575"
+          }
+        },
+        {
+          "client_id": "618461897298-6d1b5tjue04d2p2jf3t9nka9rln22dv0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcLkQTlF5wtTR9S-xc-9xfIxLX4vGJDTM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "618461897298-6d1b5tjue04d2p2jf3t9nka9rln22dv0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
