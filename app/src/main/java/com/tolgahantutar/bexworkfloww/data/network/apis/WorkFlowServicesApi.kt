@@ -17,18 +17,4 @@ interface WorkFlowServicesApi {
     suspend fun getDomain(
         @Field("Location") Location:String
     ):Response<GetDomainResponse>
-
-    companion object{
-        operator fun invoke(): WorkFlowServicesApi{
-            val okHttpClient = OkHttpClient.Builder().build()
-            val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-
-            return Retrofit.Builder()
-                .client(okHttpClient)
-                .baseUrl("http://bexfatestv2service.saasteknoloji.com/api/bexworkflow/")
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .build()
-                .create(WorkFlowServicesApi::class.java)
-        }
-    }
 }

@@ -16,7 +16,7 @@ import retrofit2.http.POST
 
 interface VisaServicesApi {
 @FormUrlEncoded
-@POST("authorizesession")
+@POST("session/authorizesession")
 
 suspend fun userLogin(
     @Field("SessionID") SessionID:Int,
@@ -25,21 +25,4 @@ suspend fun userLogin(
     @Field("Password") Password: String,
     @Field("LoginType") LoginType: String
 ): Response<AuthorizeSessionResponse>
-
- companion object{
-operator fun invoke(): VisaServicesApi {
-    val logging = HttpLoggingInterceptor()
-    logging.setLevel(HttpLoggingInterceptor.Level.BODY)
-    val okHttpClient = OkHttpClient.Builder().addInterceptor(logging).build()
-
-    val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-return Retrofit.Builder()
-    .client(okHttpClient)
-    .baseUrl("http://bexfatestv2service.saasteknoloji.com/api/visa/session/")
-    .addConverterFactory(MoshiConverterFactory.create(moshi))
-    .build()
-    .create(VisaServicesApi::class.java)
-
-}
-}
 }

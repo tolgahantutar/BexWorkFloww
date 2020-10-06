@@ -3,6 +3,7 @@ package com.tolgahantutar.bexworkfloww.ui.auth
 import android.content.Intent
 import android.view.View
 import android.widget.Toast
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,20 +15,11 @@ import com.tolgahantutar.bexworkfloww.util.NoInternetException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-class AuthViewModel (
-    //private val repository: AuthorizeSessionRepository
-
+class AuthViewModel @ViewModelInject constructor (
+   private val authorizeSessionRepository: AuthorizeSessionRepository,
+   private val getDomainRepository: GetDomainRepository
 ):ViewModel() {
-lateinit var authorizeSessionRepository: AuthorizeSessionRepository
-    lateinit var getDomainRepository: GetDomainRepository
-
-    @Inject constructor(authorizeSessionRepository: AuthorizeSessionRepository,getDomainRepository: GetDomainRepository) : this(){
-       this.authorizeSessionRepository=authorizeSessionRepository
-        this.getDomainRepository=getDomainRepository
-    }
-
    var userName :String?=null
     var password: String ? = null
     val isLoading = MutableLiveData<Boolean>()
