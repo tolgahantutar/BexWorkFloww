@@ -1,4 +1,4 @@
-package com.tolgahantutar.bexworkfloww.data.models
+package com.tolgahantutar.bexworkfloww.data.models.getdomain
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.tolgahantutar.bexworkfloww.*
 import com.tolgahantutar.bexworkfloww.databinding.ActivityLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,9 +21,9 @@ class LoginActivity : AppCompatActivity(){
     private lateinit var binding : ActivityLoginBinding
     private val authViewModel : AuthViewModel by viewModels()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_login)
         binding.viewmodel=authViewModel
@@ -33,22 +34,18 @@ class LoginActivity : AppCompatActivity(){
                 progress_bar.visibility = View.INVISIBLE
             }
         })
-        authViewModel.getDomain()
-        authViewModel.domainResult.observe(this, Observer {
+        authViewModel.isSuccessfull.observe(this, Observer {
             if(it){
-               authViewModel.domainApiKey.observe(this, Observer {
-                    Toast.makeText(this, authViewModel.domainApiKey.value, Toast.LENGTH_LONG).show()
-                })
+                Toast.makeText(this, "User Get Successfully", Toast.LENGTH_SHORT).show()
+            }
+            if(!it){
+                Toast.makeText(this, "Can't get the User", Toast.LENGTH_SHORT).show()
             }
         })
-        val crashButton = Button(this)
-        crashButton.text = "Crash!"
-        crashButton.setOnClickListener {
-            throw RuntimeException("Test Crash") // Force a crash
+    authViewModel.getUserResponseMutable.observe(this, Observer {
+        if (it.result){
+            Toast.makeText(this, "Data Changed", Toast.LENGTH_SHORT).show()
         }
-
-        addContentView(crashButton, ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT))
+    })
     }
 }

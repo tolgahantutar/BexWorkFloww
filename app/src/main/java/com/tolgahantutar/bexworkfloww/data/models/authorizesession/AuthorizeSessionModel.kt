@@ -1,4 +1,4 @@
-package com.tolgahantutar.bexworkfloww.data.models
+package com.tolgahantutar.bexworkfloww.data.models.authorizesession
 
 import com.google.gson.annotations.SerializedName
 import com.squareup.moshi.Json

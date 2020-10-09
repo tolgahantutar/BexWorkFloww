@@ -2,6 +2,7 @@ package com.tolgahantutar.bexworkfloww.dagger.modules
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.tolgahantutar.bexworkfloww.data.network.apis.ContactServicesApi
 import com.tolgahantutar.bexworkfloww.data.network.apis.VisaServicesApi
 import com.tolgahantutar.bexworkfloww.data.network.apis.WorkFlowServicesApi
 import dagger.Module
@@ -63,6 +64,15 @@ object NetworkModule {
             .baseUrl("http://bexfatestv2service.saasteknoloji.com/api/bexworkflow/")
             .build()
             .create(WorkFlowServicesApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideContactServices(retrofit: Retrofit.Builder) : ContactServicesApi{
+        return retrofit
+            .baseUrl("http://bexfatestv2service.saasteknoloji.com/api/contact/")
+            .build()
+            .create(ContactServicesApi::class.java)
     }
 
 }

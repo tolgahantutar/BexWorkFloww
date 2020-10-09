@@ -2,16 +2,16 @@ package com.tolgahantutar.bexworkfloww.data.network.responses
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.tolgahantutar.bexworkfloww.data.models.getdomain.GetDomainModel
+import com.tolgahantutar.bexworkfloww.data.models.getuser.GetUserValue
 
 @JsonClass(generateAdapter = true)
-data class GetDomainResponse(
+data class GetUserResponse(
     @Json(name = "Value")
-    var getDomainModel: GetDomainModel,
+    var getUserValue: GetUserValue,
     @Json(name = "Result")
-    var Result: Boolean,
+    val result : Boolean,
     @Json(name = "Description")
-    var Description: String?,
+    val description : String?,
     @Json(name = "Code")
-    var Code: String
+    val code : String
 )
