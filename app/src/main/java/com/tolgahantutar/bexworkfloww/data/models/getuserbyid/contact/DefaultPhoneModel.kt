@@ -1,8 +1,11 @@
 package com.tolgahantutar.bexworkfloww.data.models.getuserbyid.contact
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @JsonClass(generateAdapter = true)
 data class DefaultPhoneModel(
     @Json(name = "ContactID")
@@ -33,4 +36,4 @@ data class DefaultPhoneModel(
     var basicPhoneNumber : String,
     @Json(name = "ID")
     var id : String
-)
+):Parcelable

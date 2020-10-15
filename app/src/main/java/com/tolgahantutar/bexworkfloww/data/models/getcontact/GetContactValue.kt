@@ -1,5 +1,6 @@
 package com.tolgahantutar.bexworkfloww.data.models.getcontact
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.tolgahantutar.bexworkfloww.data.models.getuserbyid.contact.DefaultAdressModel
@@ -7,9 +8,11 @@ import com.tolgahantutar.bexworkfloww.data.models.getuserbyid.contact.DefaultEma
 import com.tolgahantutar.bexworkfloww.data.models.getuserbyid.contact.DefaultPhoneModel
 import com.tolgahantutar.bexworkfloww.data.models.getuserbyid.contact.DefaultWebAddressModel
 import com.tolgahantutar.bexworkfloww.data.models.getuserbyid.contact.contacttype.ContactTypeModel
-import java.io.Serializable
+import kotlinx.android.parcel.Parcelize
+
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class GetContactValue(
     @Json(name = "AddressBookID")
     val addressBookId : Int,
@@ -33,4 +36,4 @@ data class GetContactValue(
     val name : String,
     @Json(name="ID")
     val id : Int
-):Serializable
+):Parcelable

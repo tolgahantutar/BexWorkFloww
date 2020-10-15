@@ -10,7 +10,6 @@ import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.tolgahantutar.bexworkfloww.*
-import com.tolgahantutar.bexworkfloww.data.network.repositories.GetUserGlobalRepository
 import com.tolgahantutar.bexworkfloww.databinding.ActivityLoginBinding
 import com.tolgahantutar.bexworkfloww.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint

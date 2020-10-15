@@ -1,7 +1,6 @@
 package com.tolgahantutar.bexworkfloww.ui.auth
 
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.hilt.lifecycle.ViewModelInject
@@ -10,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tolgahantutar.bexworkfloww.data.network.repositories.AuthorizeSessionRepository
 import com.tolgahantutar.bexworkfloww.data.network.repositories.GetDomainRepository
-import com.tolgahantutar.bexworkfloww.data.network.repositories.GetUserGlobalRepository
 import com.tolgahantutar.bexworkfloww.data.network.repositories.GetUserRepository
 import com.tolgahantutar.bexworkfloww.data.network.responses.GetUserResponse
 import com.tolgahantutar.bexworkfloww.ui.home.HomeActivity

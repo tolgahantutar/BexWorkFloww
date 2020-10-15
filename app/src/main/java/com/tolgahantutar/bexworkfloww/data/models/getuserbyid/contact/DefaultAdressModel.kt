@@ -1,12 +1,15 @@
 package com.tolgahantutar.bexworkfloww.data.models.getuserbyid.contact
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.tolgahantutar.bexworkfloww.data.models.getuserbyid.contact.defaultaddress.CityModel
 import com.tolgahantutar.bexworkfloww.data.models.getuserbyid.contact.defaultaddress.CountryModel
 import com.tolgahantutar.bexworkfloww.data.models.getuserbyid.contact.defaultaddress.CountyModel
 import com.tolgahantutar.bexworkfloww.data.models.getuserbyid.contact.defaultaddress.StateModel
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @JsonClass(generateAdapter = true)
 data class DefaultAdressModel(
     @Json(name = "ContactID")
@@ -39,4 +42,4 @@ data class DefaultAdressModel(
     var mapUrl : String?,
     @Json(name = "ID")
     var id : String
-)
+):Parcelable
