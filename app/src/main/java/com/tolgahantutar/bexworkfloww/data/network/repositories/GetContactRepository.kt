@@ -1,6 +1,5 @@
 package com.tolgahantutar.bexworkfloww.data.network.repositories
 
-import androidx.room.Index
 import com.tolgahantutar.bexworkfloww.data.network.SafeApiRequest
 import com.tolgahantutar.bexworkfloww.data.network.apis.ContactServicesApi
 import com.tolgahantutar.bexworkfloww.data.network.responses.GetContactResponse

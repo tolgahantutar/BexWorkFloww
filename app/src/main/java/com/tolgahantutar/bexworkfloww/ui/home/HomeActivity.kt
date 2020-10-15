@@ -8,6 +8,7 @@ import com.tolgahantutar.bexworkfloww.R
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_home.*
 
+
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,14 +16,14 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
 
         setSupportActionBar(toolbar)
-        val navController = Navigation.findNavController(this,R.id.fragment)
+        val navController = Navigation.findNavController(this,R.id.Fragment)
         NavigationUI.setupWithNavController(nav_view,navController)
         NavigationUI.setupActionBarWithNavController(this,navController,drawer_layout)
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return NavigationUI.navigateUp(
-            Navigation.findNavController(this,R.id.fragment),
+            Navigation.findNavController(this,R.id.Fragment),
             drawer_layout
         )
     }

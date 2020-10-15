@@ -7,6 +7,7 @@ import com.tolgahantutar.bexworkfloww.data.models.getuserbyid.contact.DefaultEma
 import com.tolgahantutar.bexworkfloww.data.models.getuserbyid.contact.DefaultPhoneModel
 import com.tolgahantutar.bexworkfloww.data.models.getuserbyid.contact.DefaultWebAddressModel
 import com.tolgahantutar.bexworkfloww.data.models.getuserbyid.contact.contacttype.ContactTypeModel
+import java.io.Serializable
 
 @JsonClass(generateAdapter = true)
 data class GetContactValue(
@@ -32,4 +33,4 @@ data class GetContactValue(
     val name : String,
     @Json(name="ID")
     val id : Int
-)
+):Serializable

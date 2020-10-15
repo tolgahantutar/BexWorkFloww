@@ -27,10 +27,9 @@ class AuthViewModel @ViewModelInject constructor (
     var userName :String?=null
     var password: String ? = null
     val isLoading = MutableLiveData<Boolean>()
+    val isFinished = MutableLiveData<Boolean>()
     private val location = "bexfatest.saasteknoloji.com"
-    val isSuccessfull = MutableLiveData<Boolean>()
     var getUserResponseMutable = MutableLiveData<GetUserResponse>()
-    var getUserGlobalRepository = GetUserGlobalRepository.instance
     fun onClickUserLogin(view: View){
         val sessionID = 0
         val authorityID = 0
@@ -46,27 +45,21 @@ class AuthViewModel @ViewModelInject constructor (
                     isLoading.value=false
                     val domainResponse=getDomain(location)
                     val getUserResponse = getUser(authResponse.authorizeSessionModel!!.ID,"Bearer "+domainResponse.getDomainModel.ApiKey)
-                    getUserGlobalRepository.setResult(getUserResponse.getUserValue,getUserResponse.result,getUserResponse.description,getUserResponse.code)
-
-                    if (getUserGlobalRepository.result!!.result){
-
-                        isSuccessfull.value=true
-                        getUserResponseMutable.value=getUserResponse
-                    }
-                    //Toast.makeText(view.context, "Login Successfull", Toast.LENGTH_LONG).show()
+                    getUserResponseMutable.value = getUserResponse
                     val intent = Intent(view.context,HomeActivity::class.java)
                     view.context.startActivity(intent)
+                    isFinished.value=true
+
                 }else{
                     isLoading.value=false
-                    Toast.makeText(view.context, "Login Failed!!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(view.context, "Hatalı Kullanıcı Adı veya Şifre!", Toast.LENGTH_LONG).show()
                 }
            }
             else{
-                Toast.makeText(view.context, "Kullanıcı adı ve şifre boş bırakılamaz!!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(view.context, "Kullanıcı adı ve şifre boş bırakılamaz!", Toast.LENGTH_SHORT).show()
             }
         }
 }
-
 
 suspend fun userLogin(
 SessionID : Int,

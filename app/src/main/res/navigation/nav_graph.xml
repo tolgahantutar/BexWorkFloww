@@ -14,5 +14,19 @@
         android:id="@+id/fragmentAdressBook"
         android:name="com.tolgahantutar.bexworkfloww.ui.addressbook.AdressBookFragment"
         android:label="Adres Defteri"
-        tools:layout="@layout/adress_book_fragment" />
+        tools:layout="@layout/adress_book_fragment" >
+        <action
+            android:id="@+id/action_user_detail"
+            app:destination="@id/userDetailAddressFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userDetailAddressFragment"
+        android:name="com.tolgahantutar.bexworkfloww.ui.userdetailaddress.UserDetailAddressFragment"
+        android:label="@string/nullLabel"
+        tools:layout="@layout/user_detail_address_fragment">
+        <argument
+            android:name="GetContactDetail"
+            app:argType="com.tolgahantutar.bexworkfloww.data.models.getcontact.GetContactValue"
+            app:nullable="true" />
+    </fragment>
 </navigation>

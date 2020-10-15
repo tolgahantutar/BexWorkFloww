@@ -9,4 +9,10 @@
     <string name="adres_defteri">Adres Defteri</string>
     <string name="user_gmail">tolgahan.tutar@gmail.com</string>
     <string name="user_name">Tolgahan TUTAR</string>
+    <string name="nullLabel"></string>
+    <string name="Phone">Telefon</string>
+    <string name="Email">E-mail</string>
+    <string name="Address">Adres</string>
+    <string name="webAddress">Web Adresi</string>
+    <string name="Logout">Çıkış</string>
 </resources>
