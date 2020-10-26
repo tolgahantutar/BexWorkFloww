@@ -22,7 +22,6 @@ class LoginActivity : AppCompatActivity(){
     private val authViewModel : AuthViewModel by viewModels()
     private lateinit var checkApiKey : String
     private lateinit var sharedPreferences: SharedPreferences
-    //var sharedPrefSingleton = SharedPrefSingleton.instance
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,8 +29,6 @@ class LoginActivity : AppCompatActivity(){
         binding = DataBindingUtil.setContentView(this,R.layout.activity_login)
         binding.viewmodel=authViewModel
         sharedPreferences = SharedPrefSingleton.getSharedPreferences(applicationContext)
-        //sharedPreferences=sharedPrefSingleton.getSharedPreferences(applicationContext)
-        val editor = sharedPreferences.edit()
         checkApiKey = SharedPrefSingleton.getSomeStringValue(applicationContext).toString()
         if (checkApiKey!="notGenerated"){
             val intent = Intent(this,HomeActivity::class.java)

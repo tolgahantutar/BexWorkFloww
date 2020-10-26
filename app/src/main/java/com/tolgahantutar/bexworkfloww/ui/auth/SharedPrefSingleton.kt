@@ -17,8 +17,4 @@ object SharedPrefSingleton{
         editor.putString("apiKey", newValue)
         editor.apply()
     }
-
-    /*companion object{
-        val instance = SharedPrefSingleton()
-    }*/
 }

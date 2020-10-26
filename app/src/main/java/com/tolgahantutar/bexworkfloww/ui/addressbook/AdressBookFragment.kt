@@ -16,11 +16,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.adress_book_fragment.*
 
+@Suppress("DEPRECATION")
 @AndroidEntryPoint
 class AdressBookFragment : Fragment() {
     private val addressBookViewModel : AdressBookViewModel by viewModels()
-    //private val sharedPrefSingleton = SharedPrefSingleton.instance
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,10 +32,7 @@ class AdressBookFragment : Fragment() {
                 addressBookViewModel.mutableGetContactResponse.observe(viewLifecycleOwner, Observer {
                 recycler_view_contacts.adapter =ContactValueAdapter(it.getContactValue)
                 })
-
         recycler_view_contacts.setHasFixedSize(true)
         recycler_view_contacts.layoutManager =LinearLayoutManager(requireContext())
-
-        
     }
 }

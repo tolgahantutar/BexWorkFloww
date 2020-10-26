@@ -24,7 +24,6 @@ class AuthViewModel @ViewModelInject constructor (
    private val getDomainRepository: GetDomainRepository,
    private val getUserRepository: GetUserRepository
 ):ViewModel() {
-    var headerUserName ="Tolgahan TUTAR"
     var userName :String?=null
     var password: String ? = null
     val isLoading = MutableLiveData<Boolean>()
