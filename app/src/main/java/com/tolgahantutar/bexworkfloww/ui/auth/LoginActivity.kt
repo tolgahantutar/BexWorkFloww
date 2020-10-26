@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -21,18 +22,17 @@ class LoginActivity : AppCompatActivity(){
     private val authViewModel : AuthViewModel by viewModels()
     private lateinit var checkApiKey : String
     private lateinit var sharedPreferences: SharedPreferences
-
-    var sharedPrefSingleton = SharedPrefSingleton.instance
+    //var sharedPrefSingleton = SharedPrefSingleton.instance
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = DataBindingUtil.setContentView(this,R.layout.activity_login)
         binding.viewmodel=authViewModel
-        sharedPreferences=sharedPrefSingleton.getSharedPreferences(applicationContext)
+        sharedPreferences = SharedPrefSingleton.getSharedPreferences(applicationContext)
+        //sharedPreferences=sharedPrefSingleton.getSharedPreferences(applicationContext)
         val editor = sharedPreferences.edit()
-        checkApiKey = sharedPrefSingleton.getSomeStringValue(applicationContext).toString()
+        checkApiKey = SharedPrefSingleton.getSomeStringValue(applicationContext).toString()
         if (checkApiKey!="notGenerated"){
             val intent = Intent(this,HomeActivity::class.java)
             startActivity(intent)
@@ -47,7 +47,7 @@ class LoginActivity : AppCompatActivity(){
         })
         authViewModel.getUserResponseMutable.observe(this, Observer {
         if (it.result){
-            sharedPrefSingleton.setSomeStringValue(applicationContext,it.getUserValue.apiKey)
+            SharedPrefSingleton.setSomeStringValue(applicationContext,it.getUserValue.apiKey)
         }
         })
         authViewModel.isFinished.observe(this, Observer {
@@ -55,5 +55,6 @@ class LoginActivity : AppCompatActivity(){
                 finish()
             }
         })
+
     }
 }

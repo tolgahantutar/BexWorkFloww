@@ -15,4 +15,7 @@
     <string name="Address">Adres</string>
     <string name="webAddress">Web Adresi</string>
     <string name="Logout">Çıkış</string>
+    <string name="filter">Filtrele</string>
+    <string name="off">off</string>
+    <string name="on">on</string>
 </resources>

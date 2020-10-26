@@ -3,7 +3,7 @@ package com.tolgahantutar.bexworkfloww.ui.auth
 import android.content.Context
 import android.content.SharedPreferences
 
-class SharedPrefSingleton(){
+object SharedPrefSingleton{
 
      fun getSharedPreferences(context: Context): SharedPreferences {
         return context.getSharedPreferences("KEY_PREFERENCE", Context.MODE_PRIVATE)
@@ -18,7 +18,7 @@ class SharedPrefSingleton(){
         editor.apply()
     }
 
-    companion object{
+    /*companion object{
         val instance = SharedPrefSingleton()
-    }
+    }*/
 }
