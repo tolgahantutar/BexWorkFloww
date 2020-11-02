@@ -29,4 +29,9 @@
             app:argType="com.tolgahantutar.bexworkfloww.data.models.getcontact.GetContactValue"
             app:nullable="true" />
     </fragment>
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.tolgahantutar.bexworkfloww.ui.editprofile.EditProfileFragment"
+        android:label="Profilimi Güncelle"
+        tools:layout="@layout/edit_profile_fragment" />
 </navigation>

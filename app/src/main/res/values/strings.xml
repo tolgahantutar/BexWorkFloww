@@ -18,4 +18,7 @@
     <string name="filter">Filtrele</string>
     <string name="off">off</string>
     <string name="on">on</string>
+    <string name="todo">TODO</string>
+    <string name="bexfa_administrator">Bexfa Administrator</string>
+    <string name="save_profile">KAYDET</string>
 </resources>

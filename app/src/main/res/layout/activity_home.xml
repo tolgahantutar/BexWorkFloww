@@ -65,6 +65,14 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_marginTop="15dp"
+                        android:id="@+id/user_profile_image_left_drawable"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        app:srcCompat="@drawable/profile_image"
+                        android:layout_centerHorizontal="true"
+                        />
                 <ImageView
                     android:id="@+id/image_help"
                     android:layout_width="30dp"
@@ -89,19 +97,9 @@
                 android:layout_width="250dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-                <include layout="@layout/nav_header_layout"
-                    android:id="@+id/headers"
-                    />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#FFFFFF"
-                    android:layout_marginLeft="5dp">
-                </LinearLayout>
                 <include layout="@layout/nav_drawer_menu"/>
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>
-
 </layout>

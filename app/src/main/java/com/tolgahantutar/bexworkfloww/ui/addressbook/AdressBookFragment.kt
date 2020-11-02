@@ -7,13 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
-import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tolgahantutar.bexworkfloww.R
-import com.tolgahantutar.bexworkfloww.ui.auth.SharedPrefSingleton
+import com.tolgahantutar.bexworkfloww.ui.auth.SharedPrefSingletonUserAPI
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.adress_book_fragment.*
 
 @Suppress("DEPRECATION")
@@ -28,7 +25,7 @@ class AdressBookFragment : Fragment() {
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        addressBookViewModel.getContact(2,SharedPrefSingleton.getSomeStringValue(requireContext())/*getUserGlobalRepository.apiKey*/)
+        addressBookViewModel.getContact(2,SharedPrefSingletonUserAPI.getSomeStringValue(requireContext())/*getUserGlobalRepository.apiKey*/)
                 addressBookViewModel.mutableGetContactResponse.observe(viewLifecycleOwner, Observer {
                 recycler_view_contacts.adapter =ContactValueAdapter(it.getContactValue)
                 })

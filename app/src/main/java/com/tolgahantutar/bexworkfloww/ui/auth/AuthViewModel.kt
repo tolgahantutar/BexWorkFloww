@@ -2,22 +2,17 @@ package com.tolgahantutar.bexworkfloww.ui.auth
 
 import android.content.Intent
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tolgahantutar.bexworkfloww.R
 import com.tolgahantutar.bexworkfloww.data.network.repositories.AuthorizeSessionRepository
 import com.tolgahantutar.bexworkfloww.data.network.repositories.GetDomainRepository
 import com.tolgahantutar.bexworkfloww.data.network.repositories.GetUserRepository
 import com.tolgahantutar.bexworkfloww.data.network.responses.GetUserResponse
 import com.tolgahantutar.bexworkfloww.ui.home.HomeActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.w3c.dom.Text
+import kotlinx.coroutines.*
 
 class AuthViewModel @ViewModelInject constructor (
    private val authorizeSessionRepository: AuthorizeSessionRepository,
@@ -28,28 +23,32 @@ class AuthViewModel @ViewModelInject constructor (
     var password: String ? = null
     val isLoading = MutableLiveData<Boolean>()
     val isFinished = MutableLiveData<Boolean>()
+    val isAuthExists = MutableLiveData<Boolean>(false)
+    val isDomainExists = MutableLiveData<Boolean>(false)
+    val authID = MutableLiveData<Int>()
+    val domainKey = MutableLiveData<String>()
     private val location = "bexfatest.saasteknoloji.com"
     var getUserResponseMutable = MutableLiveData<GetUserResponse>()
     fun onClickUserLogin(view: View){
         val sessionID = 0
         val authorityID = 0
         val loginType = "System"
-
         viewModelScope.launch {
                 if(!(userName==null||password==null)){
                 isLoading.value = true
-
                     val authResponse = userLogin(sessionID,authorityID,userName!!,password!!,loginType)
-
+                    isAuthExists.value=true
+                    authID.value=authResponse.authorizeSessionModel!!.ID
                 if(authResponse.Result){
                     isLoading.value=false
                     val domainResponse=getDomain(location)
+                    isDomainExists.value=true
+                    domainKey.value = domainResponse.getDomainModel.ApiKey
                     val getUserResponse = getUser(authResponse.authorizeSessionModel!!.ID,"Bearer "+domainResponse.getDomainModel.ApiKey)
                     getUserResponseMutable.value = getUserResponse
                     val intent = Intent(view.context,HomeActivity::class.java)
                     view.context.startActivity(intent)
                     isFinished.value=true
-
                 }else{
                     isLoading.value=false
                     Toast.makeText(view.context, "Hatalı Kullanıcı Adı veya Şifre!", Toast.LENGTH_LONG).show()

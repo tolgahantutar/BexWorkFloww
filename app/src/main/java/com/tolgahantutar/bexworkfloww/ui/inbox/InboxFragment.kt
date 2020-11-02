@@ -3,20 +3,12 @@ package com.tolgahantutar.bexworkfloww.ui.inbox
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.Switch
-import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProviders
 import com.tolgahantutar.bexworkfloww.R
-import com.tolgahantutar.bexworkfloww.ui.auth.AuthViewModel
 import com.tolgahantutar.bexworkfloww.ui.auth.LoginActivity
-import com.tolgahantutar.bexworkfloww.ui.auth.SharedPrefSingleton
+import com.tolgahantutar.bexworkfloww.ui.auth.SharedPrefSingletonUserAPI
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.inbox_fragment.*
 
@@ -45,7 +37,7 @@ class InboxFragment : Fragment() {
         when(item.itemId){
             R.id.item_logout -> {
                 startActivity(intent)
-                SharedPrefSingleton.setSomeStringValue(requireContext(), "notGenerated")
+                SharedPrefSingletonUserAPI.setSomeStringValue(requireContext(), "notGenerated")
                 activity?.onBackPressed()
             }
         }
