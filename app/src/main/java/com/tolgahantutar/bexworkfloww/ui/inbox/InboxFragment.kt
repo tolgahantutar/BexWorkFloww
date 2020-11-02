@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.tolgahantutar.bexworkfloww.R
 import com.tolgahantutar.bexworkfloww.ui.auth.LoginActivity
-import com.tolgahantutar.bexworkfloww.ui.auth.SharedPrefSingletonUserAPI
+import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonUserAPI
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.inbox_fragment.*
 
@@ -37,7 +37,7 @@ class InboxFragment : Fragment() {
         when(item.itemId){
             R.id.item_logout -> {
                 startActivity(intent)
-                SharedPrefSingletonUserAPI.setSomeStringValue(requireContext(), "notGenerated")
+                inboxViewModel.cleanUserApi()
                 activity?.onBackPressed()
             }
         }

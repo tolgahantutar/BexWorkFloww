@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tolgahantutar.bexworkfloww.R
-import com.tolgahantutar.bexworkfloww.ui.auth.SharedPrefSingletonUserAPI
+import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonUserAPI
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.adress_book_fragment.*
 
@@ -25,7 +25,7 @@ class AdressBookFragment : Fragment() {
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        addressBookViewModel.getContact(2,SharedPrefSingletonUserAPI.getSomeStringValue(requireContext())/*getUserGlobalRepository.apiKey*/)
+        addressBookViewModel.executeGetContact()
                 addressBookViewModel.mutableGetContactResponse.observe(viewLifecycleOwner, Observer {
                 recycler_view_contacts.adapter =ContactValueAdapter(it.getContactValue)
                 })

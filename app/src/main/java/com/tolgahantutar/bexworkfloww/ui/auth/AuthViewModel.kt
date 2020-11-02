@@ -11,13 +11,19 @@ import com.tolgahantutar.bexworkfloww.data.network.repositories.AuthorizeSession
 import com.tolgahantutar.bexworkfloww.data.network.repositories.GetDomainRepository
 import com.tolgahantutar.bexworkfloww.data.network.repositories.GetUserRepository
 import com.tolgahantutar.bexworkfloww.data.network.responses.GetUserResponse
+import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonAuthID
+import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonDomainKey
+import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonUserAPI
 import com.tolgahantutar.bexworkfloww.ui.home.HomeActivity
 import kotlinx.coroutines.*
 
 class AuthViewModel @ViewModelInject constructor (
    private val authorizeSessionRepository: AuthorizeSessionRepository,
    private val getDomainRepository: GetDomainRepository,
-   private val getUserRepository: GetUserRepository
+   private val getUserRepository: GetUserRepository,
+   private val sharedPrefSingletonAuthID: SharedPrefSingletonAuthID,
+   private val sharedPrefSingletonDomainKey: SharedPrefSingletonDomainKey,
+   private val sharedPrefSingletonUserAPI: SharedPrefSingletonUserAPI
 ):ViewModel() {
     var userName :String?=null
     var password: String ? = null
@@ -29,6 +35,16 @@ class AuthViewModel @ViewModelInject constructor (
     val domainKey = MutableLiveData<String>()
     private val location = "bexfatest.saasteknoloji.com"
     var getUserResponseMutable = MutableLiveData<GetUserResponse>()
+    val isCheckTrue = MutableLiveData<Boolean>(false)
+    fun checkApiKey(){
+        if(sharedPrefSingletonUserAPI.getSomeStringValue().toString()!="notGenerated"){
+            isCheckTrue.value=true
+        }
+        else{
+            isCheckTrue.value=false
+        }
+    }
+
     fun onClickUserLogin(view: View){
         val sessionID = 0
         val authorityID = 0
@@ -39,13 +55,16 @@ class AuthViewModel @ViewModelInject constructor (
                     val authResponse = userLogin(sessionID,authorityID,userName!!,password!!,loginType)
                     isAuthExists.value=true
                     authID.value=authResponse.authorizeSessionModel!!.ID
+                    sharedPrefSingletonAuthID.setSomeStringValue(authID.value!!)
                 if(authResponse.Result){
                     isLoading.value=false
                     val domainResponse=getDomain(location)
                     isDomainExists.value=true
                     domainKey.value = domainResponse.getDomainModel.ApiKey
-                    val getUserResponse = getUser(authResponse.authorizeSessionModel!!.ID,"Bearer "+domainResponse.getDomainModel.ApiKey)
+                    sharedPrefSingletonDomainKey.setSomeStringValue(domainKey.value)
+                    val getUserResponse = getUser(authResponse.authorizeSessionModel.ID,"Bearer "+domainResponse.getDomainModel.ApiKey)
                     getUserResponseMutable.value = getUserResponse
+                    sharedPrefSingletonUserAPI.setSomeStringValue(getUserResponseMutable.value?.getUserValue?.apiKey)
                     val intent = Intent(view.context,HomeActivity::class.java)
                     view.context.startActivity(intent)
                     isFinished.value=true

@@ -6,24 +6,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tolgahantutar.bexworkfloww.data.network.repositories.GetContactRepository
 import com.tolgahantutar.bexworkfloww.data.network.responses.GetContactResponse
+import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonUserAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AdressBookViewModel @ViewModelInject constructor(
-private val getContactRepository: GetContactRepository
+private val getContactRepository: GetContactRepository,
+private val sharedPrefSingletonUserAPI: SharedPrefSingletonUserAPI
 ): ViewModel(){
-    val isSuccessfull= MutableLiveData<Boolean>()
     val mutableGetContactResponse = MutableLiveData<GetContactResponse>()
-       fun getContact(addressBookId: Int,authorization: String?){
-           viewModelScope.launch {
-               val getContactResponse = suspendGetContact(addressBookId,"Bearer "+authorization)
-               if(getContactResponse.result){
-                   mutableGetContactResponse.value=getContactResponse
-               }
-           }
-       }
-
+    fun executeGetContact() {
+            viewModelScope.launch {
+                val getContactResponse = suspendGetContact(2, "Bearer " + sharedPrefSingletonUserAPI.getSomeStringValue())
+                if (getContactResponse.result) {
+                    mutableGetContactResponse.value = getContactResponse
+                }
+            }
+    }
 suspend fun suspendGetContact(
     addressBookId : Int,
     authorization : String
