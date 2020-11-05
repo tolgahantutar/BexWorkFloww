@@ -14,6 +14,7 @@ import com.tolgahantutar.bexworkfloww.databinding.EditProfileFragmentBinding
 import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonAuthID
 import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonDomainKey
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.edit_profile_fragment.*
 
 
 @AndroidEntryPoint
@@ -58,5 +59,16 @@ class EditProfileFragment : Fragment() {
                 menuSaveItem.title=spannable
             }
         })
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.save_profile ->{
+                editProfileViewModel.onClickSaveButton(text_email_edit_profile.text.toString(),text_phone_edit_profile.text.toString()
+                    ,text_web_address_edit_profile.text.toString(),requireView())
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 }
