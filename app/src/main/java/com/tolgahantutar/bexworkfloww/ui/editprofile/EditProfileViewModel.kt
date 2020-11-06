@@ -7,12 +7,10 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tolgahantutar.bexworkfloww.data.network.repositories.CreateContactRepository
 import com.tolgahantutar.bexworkfloww.data.network.repositories.GetUserRepository
 import com.tolgahantutar.bexworkfloww.data.network.repositories.UpdateProfileRepository
-import com.tolgahantutar.bexworkfloww.data.network.responses.GetUserResponse
-import com.tolgahantutar.bexworkfloww.data.network.responses.UpdateMailResponse
-import com.tolgahantutar.bexworkfloww.data.network.responses.UpdatePhoneResponse
-import com.tolgahantutar.bexworkfloww.data.network.responses.UpdateWebAddressResponse
+import com.tolgahantutar.bexworkfloww.data.network.responses.*
 import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonAuthID
 import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonDomainKey
 import com.tolgahantutar.bexworkfloww.validations.EmailValidation
@@ -24,6 +22,7 @@ import kotlinx.coroutines.withContext
 class EditProfileViewModel @ViewModelInject constructor(
     private val getUserRepository: GetUserRepository,
     private val updateProfileRepository: UpdateProfileRepository,
+    private val createContactRepository: CreateContactRepository,
     private val sharedPrefSingletonAuthID: SharedPrefSingletonAuthID,
     private val sharedPrefSingletonDomainKey: SharedPrefSingletonDomainKey
 ) : ViewModel() {
@@ -88,6 +87,14 @@ class EditProfileViewModel @ViewModelInject constructor(
             }
         }
     }
+     fun createMail(address: String, priority: Int,view: View?){
+        viewModelScope.launch {
+            val createMailResponse: CreateMailResponse = createMailAsync(emailContactID, address, priority,0)
+            if (createMailResponse.result){
+                Toast.makeText(view!!.context, "Email created successfully", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
 
     fun onPhoneTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -129,7 +136,6 @@ class EditProfileViewModel @ViewModelInject constructor(
     priority: Int,
     id: Int
     )= withContext(Dispatchers.IO){updateProfileRepository.updateMail(contactID,address,priority,id)}
-
     private suspend fun updatePhone(
         contactID: Int,
         priority: Int,
@@ -154,4 +160,11 @@ class EditProfileViewModel @ViewModelInject constructor(
         priority: Int,
         id: Int
     )= withContext(Dispatchers.IO){updateProfileRepository.updateWebAddress(contactID,url,priority, id)}
+
+    private suspend fun createMailAsync(
+        contactID: Int,
+        address: String,
+        priority: Int,
+        id: Int
+    )= withContext(Dispatchers.IO){createContactRepository.createMail(contactID, address, priority, id)}
 }

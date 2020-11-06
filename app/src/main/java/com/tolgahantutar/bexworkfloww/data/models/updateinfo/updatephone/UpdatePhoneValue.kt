@@ -1,4 +1,4 @@
-package com.tolgahantutar.bexworkfloww.data.models.updatephone
+package com.tolgahantutar.bexworkfloww.data.models.updateinfo.updatephone
 
 import android.os.Parcelable
 import com.squareup.moshi.Json

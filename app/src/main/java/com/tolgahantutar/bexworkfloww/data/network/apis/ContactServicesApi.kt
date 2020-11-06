@@ -1,9 +1,6 @@
 package com.tolgahantutar.bexworkfloww.data.network.apis
 
-import com.tolgahantutar.bexworkfloww.data.network.responses.GetContactResponse
-import com.tolgahantutar.bexworkfloww.data.network.responses.UpdateMailResponse
-import com.tolgahantutar.bexworkfloww.data.network.responses.UpdatePhoneResponse
-import com.tolgahantutar.bexworkfloww.data.network.responses.UpdateWebAddressResponse
+import com.tolgahantutar.bexworkfloww.data.network.responses.*
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -54,4 +51,13 @@ interface ContactServicesApi {
         @Field("Priority") priority: Int,
         @Field("ID") id : Int
     ):Response<UpdateWebAddressResponse>
+
+    @FormUrlEncoded
+    @POST("email/create")
+    suspend fun createMail(
+        @Field("ContactID") contactID: Int,
+        @Field("Address") address: String,
+        @Field("Priority") priority: Int,
+        @Field("ID") id: Int
+    ):Response<CreateMailResponse>
 }

@@ -1,19 +1,20 @@
-package com.tolgahantutar.bexworkfloww.data.models.updatewebaddress
+package com.tolgahantutar.bexworkfloww.data.models.updateinfo.updatemail
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
+
 @JsonClass(generateAdapter = true)
 @Parcelize
-data class UpdateWebAddressValue(
+data class UpdateMailValue (
     @Json(name = "ContactID")
     val contactID: Int,
-    @Json(name = "Url")
-    val url : String,
+    @Json(name = "Address")
+    val address: String,
     @Json(name = "Priority")
     val priority: Int,
     @Json(name = "ID")
-    val id : Int
+    val id: Int
 ):Parcelable

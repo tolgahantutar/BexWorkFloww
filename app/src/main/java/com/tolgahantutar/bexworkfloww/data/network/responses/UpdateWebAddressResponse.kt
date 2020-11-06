@@ -2,7 +2,7 @@ package com.tolgahantutar.bexworkfloww.data.network.responses
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.tolgahantutar.bexworkfloww.data.models.updatewebaddress.UpdateWebAddressValue
+import com.tolgahantutar.bexworkfloww.data.models.updateinfo.updatewebaddress.UpdateWebAddressValue
 
 @JsonClass(generateAdapter = true)
 data class UpdateWebAddressResponse(

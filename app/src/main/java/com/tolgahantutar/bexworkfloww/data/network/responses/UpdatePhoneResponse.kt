@@ -2,7 +2,7 @@ package com.tolgahantutar.bexworkfloww.data.network.responses
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.tolgahantutar.bexworkfloww.data.models.updatephone.UpdatePhoneValue
+import com.tolgahantutar.bexworkfloww.data.models.updateinfo.updatephone.UpdatePhoneValue
 
 @JsonClass(generateAdapter = true)
 data class UpdatePhoneResponse(
