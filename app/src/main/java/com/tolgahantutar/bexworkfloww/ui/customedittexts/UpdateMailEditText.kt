@@ -9,7 +9,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
@@ -19,14 +18,14 @@ import com.tolgahantutar.bexworkfloww.ui.editprofile.EditProfileFragmentDirectio
 import com.tolgahantutar.bexworkfloww.ui.editprofile.EditProfileViewModel
 import com.tolgahantutar.bexworkfloww.validations.EmailValidation
 
-class MailEditText constructor(
+class UpdateMailEditText constructor(
     context: Context,
     id: Int,
     editProfileViewModel: EditProfileViewModel,
     priority: Int,
     view: View
 ): TextInputEditText(context){
-    val editText = this@MailEditText
+    val editText = this@UpdateMailEditText
     val isEmailEnabled = MutableLiveData<Boolean>(true)
     val isPriorityEnabled = MutableLiveData<Boolean>(true)
     val action = EditProfileFragmentDirections.actionEditProfileFragmentSelf()

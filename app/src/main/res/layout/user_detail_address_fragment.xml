@@ -32,77 +32,12 @@
         android:layout_marginTop="115dp"
         />
     </FrameLayout>
- <LinearLayout
-     android:layout_width="match_parent"
-     android:layout_height="wrap_content"
-     android:padding="20dp"
-     android:orientation="vertical"
-     >
-    <com.google.android.material.textfield.TextInputLayout
+    <LinearLayout
+        android:id="@+id/user_detail_address_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/Phone"
-        app:boxBackgroundColor="#FFFFFF"
-        android:layout_marginBottom="10dp">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/text_phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/user_phone"
-            android:drawablePadding="10dp"
-            android:editable="false">
-        </com.google.android.material.textfield.TextInputEditText>
-    </com.google.android.material.textfield.TextInputLayout>
-     <com.google.android.material.textfield.TextInputLayout
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:hint="@string/Email"
-         app:boxBackgroundColor="#FFFFFF"
-         android:layout_marginBottom="10dp">
-         <com.google.android.material.textfield.TextInputEditText
-             android:id="@+id/text_email"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:drawableLeft="@drawable/user_email"
-             android:drawablePadding="10dp"
-             android:inputType="none"
-             android:editable="false">
-         </com.google.android.material.textfield.TextInputEditText>
-     </com.google.android.material.textfield.TextInputLayout>
-     <com.google.android.material.textfield.TextInputLayout
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:hint="@string/Address"
-         app:boxBackgroundColor="#FFFFFF"
-         android:layout_marginBottom="10dp">
-         <com.google.android.material.textfield.TextInputEditText
-             android:id="@+id/text_address"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:drawableLeft="@drawable/user_address"
-             android:drawablePadding="10dp"
-             android:inputType="none"
-             android:editable="false">
-         </com.google.android.material.textfield.TextInputEditText>
-     </com.google.android.material.textfield.TextInputLayout>
-     <com.google.android.material.textfield.TextInputLayout
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:hint="@string/webAddress"
-         app:boxBackgroundColor="#FFFFFF"
-         android:layout_marginBottom="10dp">
-         <com.google.android.material.textfield.TextInputEditText
-             android:id="@+id/text_web_address"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:drawableLeft="@drawable/user_web_address"
-             android:drawablePadding="10dp"
-             android:inputType="none"
-             android:editable="false">
-         </com.google.android.material.textfield.TextInputEditText>
-     </com.google.android.material.textfield.TextInputLayout>
-
-
- </LinearLayout>
-
+        android:padding="20dp"
+        android:orientation="vertical"
+        >
+    </LinearLayout>
 </LinearLayout>

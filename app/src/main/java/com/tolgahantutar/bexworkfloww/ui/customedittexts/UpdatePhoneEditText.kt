@@ -16,16 +16,17 @@ import com.google.android.material.textfield.TextInputEditText
 import com.tolgahantutar.bexworkfloww.R
 import com.tolgahantutar.bexworkfloww.ui.editprofile.EditProfileFragmentDirections
 import com.tolgahantutar.bexworkfloww.ui.editprofile.EditProfileViewModel
+import com.tolgahantutar.bexworkfloww.validations.PhoneValidation
 
-class WebAddressEditText constructor(
+class UpdatePhoneEditText constructor(
     context: Context,
     id: Int,
     editProfileViewModel: EditProfileViewModel,
     priority: Int,
     view: View
 ): TextInputEditText(context){
-    val editText = this@WebAddressEditText
-    val isWebAddressEnabled = MutableLiveData<Boolean>(true)
+    val editText = this@UpdatePhoneEditText
+    val isPhoneEnabled = MutableLiveData<Boolean>(true)
     val isPriorityEnabled = MutableLiveData<Boolean>(true)
     val action = EditProfileFragmentDirections.actionEditProfileFragmentSelf()
     init {
@@ -35,25 +36,27 @@ class WebAddressEditText constructor(
                     context,
                     R.style.ThemeOverlay_AppCompat_Dialog_Alert
                 )
-            builder.setTitle(context.getString(R.string.update_web_adress_operation))
+            builder.setTitle(context.getString(R.string.update_phone))
             val layout = LinearLayout(context)
             layout.orientation = LinearLayout.VERTICAL
-            val webAddressEditText = EditText(context)
-            webAddressEditText.setText(editText.text)
-            webAddressEditText.hint = context.getString(R.string.enter_your_web_address)
+            val phoneEditText = EditText(context)
+            phoneEditText.setText(editText.text)
+            phoneEditText.hint = context.getString(R.string.type_your_phone_please)
+            phoneEditText.isSingleLine=true
+            phoneEditText.inputType = InputType.TYPE_CLASS_PHONE
             val priorityEditText = EditText(context)
             priorityEditText.setText(priority.toString())
             priorityEditText.hint = context.getString(R.string.enter_priority)
             priorityEditText.inputType = InputType.TYPE_CLASS_NUMBER
-            layout.addView(webAddressEditText)
+            layout.addView(phoneEditText)
             layout.addView(priorityEditText)
             builder.setView(layout)
             builder.setPositiveButton(
-                context.getString(R.string.update_web_address),
+                context.getString(R.string.update),
                 DialogInterface.OnClickListener { _, _ ->
-                    val strUrl = webAddressEditText.text.toString()
+                    val strPhone = phoneEditText.text.toString()
                     val strPriority = priorityEditText.text.toString()
-                    editProfileViewModel.updateWebAddressFromWebAddressEditText(strUrl,strPriority.toInt(),id,context)
+                    editProfileViewModel.updatePhoneFromMailEditText(strPhone,strPriority.toInt(),id,context)
                     Navigation.findNavController(view).navigate(action)
                 })
             builder.setNegativeButton(context.getString(R.string.cancel),
@@ -62,8 +65,7 @@ class WebAddressEditText constructor(
                 })
             val dialog: AlertDialog = builder.create()
             dialog.show()
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled=true
-            webAddressEditText.addTextChangedListener(object: TextWatcher{
+            phoneEditText.addTextChangedListener(object: TextWatcher{
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
@@ -74,11 +76,19 @@ class WebAddressEditText constructor(
 
                 override fun afterTextChanged(p0: Editable?) {
                     if (p0.toString().isNullOrEmpty()){
-                        isWebAddressEnabled.value=false
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = isWebAddressEnabled.value!! && isPriorityEnabled.value!!
+                        isPhoneEnabled.value=false
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
+                            isPhoneEnabled.value!! && isPriorityEnabled.value!!
                     }else{
-                        isWebAddressEnabled.value=true
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = isWebAddressEnabled.value!! && isPriorityEnabled.value!!
+                        if(PhoneValidation().checkPhoneNumber(p0.toString())){
+                            isPhoneEnabled.value=true
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
+                                isPhoneEnabled.value!! && isPriorityEnabled.value!!
+                        }else{
+                            isPhoneEnabled.value=false
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
+                                isPhoneEnabled.value!! && isPriorityEnabled.value!!
+                        }
                     }
                 }
 
@@ -93,12 +103,13 @@ class WebAddressEditText constructor(
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
-                    if(p0.toString().isNullOrEmpty()){
+                    if (p0.toString().isNullOrEmpty()){
                         isPriorityEnabled.value=false
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = isWebAddressEnabled.value!! && isPriorityEnabled.value!!
-                    }else{
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = isPhoneEnabled.value!! && isPriorityEnabled.value!!
+                    }
+                    else{
                         isPriorityEnabled.value=true
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = isWebAddressEnabled.value!! && isPriorityEnabled.value!!
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = isPhoneEnabled.value!! && isPriorityEnabled.value!!
                     }
                 }
 
@@ -115,12 +126,12 @@ class WebAddressEditText constructor(
                                     context,
                                     R.style.ThemeOverlay_AppCompat_Dialog_Alert
                                 )
-                            builder.setTitle(context.getString(R.string.delete_web_address_operation))
-                            builder.setMessage(context.getString(R.string.sure_delete_web_address))
+                            builder.setTitle(context.getString(R.string.delete_phone_operation))
+                            builder.setMessage(context.getString(R.string.sure_delete_phone))
                             builder.setPositiveButton(
-                                context.getString(R.string.delete_web_address),
+                                context.getString(R.string.delete_phone),
                                 DialogInterface.OnClickListener { _, _ ->
-                                    editProfileViewModel.deleteWebAddressFromWebAddressEditText(editText.text.toString(),priority,id,context)
+                                    editProfileViewModel.deletePhoneFromPhoneEditText(editText.text.toString(),priority,id,context)
                                     Navigation.findNavController(view).navigate(action)
                                 })
                             builder.setNegativeButton(context.getString(R.string.cancel),

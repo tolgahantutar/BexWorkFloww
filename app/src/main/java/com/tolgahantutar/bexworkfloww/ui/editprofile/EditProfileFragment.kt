@@ -1,11 +1,9 @@
 package com.tolgahantutar.bexworkfloww.ui.editprofile
 
 
-import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.text.*
-import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.view.ViewGroup
 import android.widget.*
@@ -13,53 +11,34 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.tolgahantutar.bexworkfloww.R
-import com.tolgahantutar.bexworkfloww.data.models.CustomCityModel
+import com.tolgahantutar.bexworkfloww.data.models.InputEditTextModel
 import com.tolgahantutar.bexworkfloww.databinding.EditProfileFragmentBinding
-import com.tolgahantutar.bexworkfloww.ui.customedittexts.AddressEditText
-import com.tolgahantutar.bexworkfloww.ui.customedittexts.MailEditText
-import com.tolgahantutar.bexworkfloww.ui.customedittexts.PhoneEditText
-import com.tolgahantutar.bexworkfloww.ui.customedittexts.WebAddressEditText
-import com.tolgahantutar.bexworkfloww.validations.EmailValidation
-import com.tolgahantutar.bexworkfloww.validations.PhoneValidation
+import com.tolgahantutar.bexworkfloww.ui.customedittexts.*
 import dagger.hilt.android.AndroidEntryPoint
 
 
+@Suppress("DEPRECATION")
 @AndroidEntryPoint
 class EditProfileFragment : Fragment() {
     private lateinit var binding : EditProfileFragmentBinding
     private val editProfileViewModel: EditProfileViewModel by viewModels()
 
-    private var isButtonEnabledAddress = MutableLiveData<Boolean>(false)
-    private var isButtonEnabledPriority = MutableLiveData<Boolean>(false)
+    private var emailList = ArrayList<InputEditTextModel>()
+    private var phoneList = ArrayList<InputEditTextModel>()
+    private var addressList = ArrayList<InputEditTextModel>()
+    private var webAddressList = ArrayList<InputEditTextModel>()
 
-    private var textInputLayoutArrayEmail = ArrayList<TextInputLayout>()
-    private var textInputEditTextArrayEmail = ArrayList<TextInputEditText>()
-    private var textInputLayoutArrayPhone = ArrayList<TextInputLayout>()
-    private var textInputEditTextArrayPhone = ArrayList<TextInputEditText>()
-    private var textInputLayoutArrayAddress = ArrayList<TextInputLayout>()
-    private var textInputEditTextArrayAddress = ArrayList<TextInputEditText>()
-    private var textInputLayoutArrayWebAddress = ArrayList<TextInputLayout>()
-    private var textInputEditTextArrayWebAddress = ArrayList<TextInputEditText>()
-    private lateinit var mailEditText : MailEditText
-    private lateinit var phoneEditText: PhoneEditText
-    private lateinit var webAddressEditText: WebAddressEditText
+    private lateinit var updateMailEditText : UpdateMailEditText
+    private lateinit var updatePhoneEditText: UpdatePhoneEditText
+    private lateinit var updateWebAddressEditText: UpdateWebAddressEditText
+    private lateinit var updateAddressEditText: UpdateAddressEditText
     //
     private lateinit var dialog: AlertDialog
     private val action = EditProfileFragmentDirections.actionEditProfileFragmentSelf()
-    //
-    var countryID =0
-    var cityID = 0
-    var countyID = 0
 
-    var cityName=""
-    var countryName= ""
-    var countyName = ""
         override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -92,8 +71,7 @@ class EditProfileFragment : Fragment() {
                 textInputLayoutParams.setMargins(0, 0, 0, 10)
                 textInputLayout.layoutParams = textInputLayoutParams
 
-                textInputLayoutArrayEmail.add(textInputLayout)
-                mailEditText = MailEditText(
+                updateMailEditText = UpdateMailEditText(
                     requireContext(),
                     it.getAllEmailsResponse[x].id,
                     editProfileViewModel,
@@ -104,20 +82,21 @@ class EditProfileFragment : Fragment() {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
-                mailEditText.setCompoundDrawablesWithIntrinsicBounds(
+                updateMailEditText.setCompoundDrawablesWithIntrinsicBounds(
                     R.drawable.user_email,
                     0,
                     R.drawable.remove_black,
                     0
                 )
-                mailEditText.compoundDrawablePadding = 10
-                mailEditText.inputType = InputType.TYPE_NULL
-                mailEditText.isFocusableInTouchMode = false
-                mailEditText.layoutParams = mailEditTextParams
-                mailEditText.setText(it.getAllEmailsResponse[x].address)
-                textInputEditTextArrayEmail.add(mailEditText)
-                textInputLayoutArrayEmail[x].addView(textInputEditTextArrayEmail[x])
-                linearLayout.addView(textInputLayoutArrayEmail[x])
+                updateMailEditText.compoundDrawablePadding = 10
+                updateMailEditText.inputType = InputType.TYPE_NULL
+                updateMailEditText.isFocusableInTouchMode = false
+                updateMailEditText.layoutParams = mailEditTextParams
+                updateMailEditText.setText(it.getAllEmailsResponse[x].address)
+                val emailListElement = InputEditTextModel(textInputLayout,updateMailEditText)
+                emailList.add(emailListElement)
+                emailList[x].textInputLayout.addView(emailList[x].textInputEditText)
+                linearLayout.addView(emailList[x].textInputLayout)
                 x++
             }
             val mailTextInputLayout = TextInputLayout(
@@ -134,7 +113,7 @@ class EditProfileFragment : Fragment() {
             mailTextInputLayoutParams.setMargins(0, 0, 0, 10)
             mailTextInputLayout.layoutParams = mailTextInputLayoutParams
 
-            val mailTextInputEditText = TextInputEditText(requireContext())
+            val mailTextInputEditText = CreateMailEditText(requireContext(),editProfileViewModel,requireView(),action)
             val mailTextInputEditTextParams: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -150,83 +129,6 @@ class EditProfileFragment : Fragment() {
 
             mailTextInputLayout.addView(mailTextInputEditText)
             linearLayout.addView(mailTextInputLayout)
-            mailTextInputEditText.setOnTouchListener(object : View.OnTouchListener {
-                val DRAWABLE_RIGHT = 0
-                override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-                    when (p1?.action) {
-                        MotionEvent.ACTION_UP -> {
-                            if (p1.getRawX() >= (mailTextInputEditText.right - mailTextInputEditText.compoundDrawables[DRAWABLE_RIGHT].bounds.width())) {
-                                if (mailTextInputEditText.text.toString().isNullOrEmpty()) {
-                                    mailTextInputEditText.error = getString(R.string.property_cannot_be_null)
-                                } else {
-                                    if (EmailValidation().checkEmail(mailTextInputEditText.text.toString())) {
-                                        val builder: AlertDialog.Builder =
-                                            AlertDialog.Builder(
-                                                requireContext(),
-                                                R.style.ThemeOverlay_AppCompat_Dialog_Alert
-                                            )
-                                        builder.setTitle(getString(R.string.create_email_operation))
-                                        val layout = LinearLayout(context)
-                                        layout.orientation = LinearLayout.VERTICAL
-                                        val priorityEditText = EditText(context)
-                                        priorityEditText.hint = getString(R.string.enter_priority)
-                                        priorityEditText.inputType = InputType.TYPE_CLASS_NUMBER
-                                        layout.addView(priorityEditText)
-                                        builder.setView(layout)
-                                        builder.setPositiveButton(
-                                            getString(R.string.create_text),
-                                            DialogInterface.OnClickListener { _, _ ->
-                                                val priority = priorityEditText.text.toString()
-                                                editProfileViewModel.createMailFromMailEditText(
-                                                    mailTextInputEditText.text.toString(),
-                                                    priority.toInt(),
-                                                    requireContext()
-                                                )
-                                            Navigation.findNavController(requireView()).navigate(action)
-                                            })
-                                        builder.setNegativeButton(getString(R.string.cancel),
-                                            DialogInterface.OnClickListener { dialog, _ ->
-                                                dialog.cancel()
-                                            })
-                                        val dialog: AlertDialog = builder.create()
-                                        dialog.show()
-                                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                                            false
-                                        priorityEditText.addTextChangedListener(object :
-                                            TextWatcher {
-                                            override fun beforeTextChanged(
-                                                p0: CharSequence?,
-                                                p1: Int,
-                                                p2: Int,
-                                                p3: Int
-                                            ) {
-                                            }
-
-                                            override fun onTextChanged(
-                                                p0: CharSequence?,
-                                                p1: Int,
-                                                p2: Int,
-                                                p3: Int
-                                            ) {
-                                            }
-
-                                            override fun afterTextChanged(p0: Editable?) {
-                                                dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                                                    !p0.toString().isNullOrEmpty()
-                                            }
-                                        })
-                                        return true
-                                    } else {
-                                        mailTextInputEditText.error =
-                                            getString(R.string.invalid_email)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    return false
-                }
-            })
         })
 
 
@@ -247,8 +149,7 @@ class EditProfileFragment : Fragment() {
                 textInputLayoutParams.setMargins(0, 0, 0, 10)
                 textInputLayout.layoutParams = textInputLayoutParams
 
-                textInputLayoutArrayPhone.add(textInputLayout)
-                phoneEditText = PhoneEditText(
+                updatePhoneEditText = UpdatePhoneEditText(
                     requireContext(),
                     it.getAllPhonesValue[x].id,
                     editProfileViewModel,
@@ -259,20 +160,21 @@ class EditProfileFragment : Fragment() {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
-                phoneEditText.setCompoundDrawablesWithIntrinsicBounds(
+                updatePhoneEditText.setCompoundDrawablesWithIntrinsicBounds(
                     R.drawable.user_phone,
                     0,
                     R.drawable.remove_black,
                     0
                 )
-                phoneEditText.compoundDrawablePadding = 10
-                phoneEditText.inputType = InputType.TYPE_NULL
-                phoneEditText.isFocusableInTouchMode = false
-                phoneEditText.layoutParams = phoneEditTextParams
-                phoneEditText.setText(it.getAllPhonesValue[x].cleanBody)
-                textInputEditTextArrayPhone.add(phoneEditText)
-                textInputLayoutArrayPhone[x].addView(textInputEditTextArrayPhone[x])
-                linearLayout.addView(textInputLayoutArrayPhone[x])
+                updatePhoneEditText.compoundDrawablePadding = 10
+                updatePhoneEditText.inputType = InputType.TYPE_NULL
+                updatePhoneEditText.isFocusableInTouchMode = false
+                updatePhoneEditText.layoutParams = phoneEditTextParams
+                updatePhoneEditText.setText(it.getAllPhonesValue[x].cleanBody)
+                val phoneListElement = InputEditTextModel(textInputLayout,updatePhoneEditText)
+                phoneList.add(phoneListElement)
+                phoneList[x].textInputLayout.addView(phoneList[x].textInputEditText)
+                linearLayout.addView(phoneList[x].textInputLayout)
                 x++
             }
             val phoneTextInputLayout = TextInputLayout(
@@ -289,7 +191,7 @@ class EditProfileFragment : Fragment() {
             phoneTextInputLayoutParams.setMargins(0, 0, 0, 10)
             phoneTextInputLayout.layoutParams = phoneTextInputLayoutParams
 
-            val phoneTextInputEditText = TextInputEditText(requireContext())
+            val phoneTextInputEditText = CreatePhoneEditText(requireContext(),editProfileViewModel,requireView(),action)
             val phoneTextInputEditTextParams: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -306,86 +208,6 @@ class EditProfileFragment : Fragment() {
 
             phoneTextInputLayout.addView(phoneTextInputEditText)
             linearLayout.addView(phoneTextInputLayout)
-            phoneTextInputEditText.setOnTouchListener(object : View.OnTouchListener {
-                val DRAWABLE_RIGHT = 0
-                override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-                    when (p1?.action) {
-                        MotionEvent.ACTION_UP -> {
-                            if (p1.getRawX() >= (phoneTextInputEditText.right - phoneTextInputEditText.compoundDrawables[DRAWABLE_RIGHT].bounds.width())) {
-                                if (phoneTextInputEditText.text.toString().isNullOrEmpty()) {
-                                    phoneTextInputEditText.error = getString(R.string.property_cannot_be_null)
-                                } else {
-                                    if (!(PhoneValidation().checkPhoneNumber(phoneTextInputEditText.text.toString()))) {
-                                        phoneTextInputEditText.error =
-                                            getString(R.string.invalid_phone)
-                                    } else {
-                                        val builder: AlertDialog.Builder =
-                                            AlertDialog.Builder(
-                                                requireContext(),
-                                                R.style.ThemeOverlay_AppCompat_Dialog_Alert
-                                            )
-                                        builder.setTitle(getString(R.string.create_phone_operation))
-                                        val layout = LinearLayout(context)
-                                        layout.orientation = LinearLayout.VERTICAL
-                                        val priorityEditText = EditText(context)
-                                        priorityEditText.hint = getString(R.string.enter_priority)
-                                        priorityEditText.inputType = InputType.TYPE_CLASS_NUMBER
-                                        layout.addView(priorityEditText)
-                                        builder.setView(layout)
-                                        builder.setPositiveButton(
-                                            getString(R.string.create_text),
-                                            DialogInterface.OnClickListener { _, _ ->
-                                                val priority = priorityEditText.text.toString()
-                                                editProfileViewModel.createPhoneFromPhoneEditText(
-                                                    phoneTextInputEditText.text.toString(),
-                                                    priority.toInt(),
-                                                    requireContext()
-                                                )
-                                                Navigation.findNavController(requireView()).navigate(action)
-                                            })
-                                        builder.setNegativeButton(getString(R.string.cancel),
-                                            DialogInterface.OnClickListener { dialog, _ ->
-                                                dialog.cancel()
-                                            })
-                                        val dialog: AlertDialog = builder.create()
-                                        dialog.show()
-                                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                                            false
-                                        priorityEditText.addTextChangedListener(object :
-                                            TextWatcher {
-                                            override fun beforeTextChanged(
-                                                p0: CharSequence?,
-                                                p1: Int,
-                                                p2: Int,
-                                                p3: Int
-                                            ) {
-
-                                            }
-
-                                            override fun onTextChanged(
-                                                p0: CharSequence?,
-                                                p1: Int,
-                                                p2: Int,
-                                                p3: Int
-                                            ) {
-
-                                            }
-
-                                            override fun afterTextChanged(p0: Editable?) {
-                                                dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                                                    !p0.toString().isNullOrEmpty()
-                                            }
-
-                                        })
-                                        return true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    return false
-                }
-            })
         })
         editProfileViewModel.getAllAddressResponseMutable.observe(viewLifecycleOwner, Observer {
             var x = 0
@@ -404,8 +226,7 @@ class EditProfileFragment : Fragment() {
                 textInputLayoutParams.setMargins(0, 0, 0, 10)
                 textInputLayout.layoutParams = textInputLayoutParams
 
-                textInputLayoutArrayAddress.add(textInputLayout)
-                val textInputEditText = AddressEditText(
+                updateAddressEditText = UpdateAddressEditText(
                     requireContext(),
                     it.getAllAddressResponse[x].country.name.toString(),
                     it.getAllAddressResponse[x].country.id.toInt(),
@@ -424,20 +245,21 @@ class EditProfileFragment : Fragment() {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
-                textInputEditText.setCompoundDrawablesWithIntrinsicBounds(
+                updateAddressEditText.setCompoundDrawablesWithIntrinsicBounds(
                     R.drawable.user_address,
                     0,
                     R.drawable.remove_black,
                     0
                 )
-                textInputEditText.compoundDrawablePadding = 10
-                textInputEditText.inputType = InputType.TYPE_NULL
-                textInputEditText.isFocusableInTouchMode = false
-                textInputEditText.layoutParams = textInputEditTextParams
-                textInputEditText.setText(it.getAllAddressResponse[x].displayBody)
-                textInputEditTextArrayAddress.add(textInputEditText)
-                textInputLayoutArrayAddress[x].addView(textInputEditTextArrayAddress[x])
-                linearLayout.addView(textInputLayoutArrayAddress[x])
+                updateAddressEditText.compoundDrawablePadding = 10
+                updateAddressEditText.inputType = InputType.TYPE_NULL
+                updateAddressEditText.isFocusableInTouchMode = false
+                updateAddressEditText.layoutParams = textInputEditTextParams
+                updateAddressEditText.setText(it.getAllAddressResponse[x].displayBody)
+                val addressListElement = InputEditTextModel(textInputLayout,updateAddressEditText)
+                addressList.add(addressListElement)
+                addressList[x].textInputLayout.addView(addressList[x].textInputEditText)
+                linearLayout.addView(addressList[x].textInputLayout)
                 x++
             }
             val addressTextInputLayout = TextInputLayout(
@@ -454,7 +276,7 @@ class EditProfileFragment : Fragment() {
             addressTextInputLayoutParams.setMargins(0, 0, 0, 10)
             addressTextInputLayout.layoutParams = addressTextInputLayoutParams
 
-            val adressTextInputEditText = TextInputEditText(requireContext())
+            val adressTextInputEditText = CreateAddressEditText(requireContext(),editProfileViewModel,viewLifecycleOwner,requireView(),action)
             val adressTextInputEditTextParams: LinearLayout.LayoutParams =
                 LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -473,256 +295,6 @@ class EditProfileFragment : Fragment() {
 
             addressTextInputLayout.addView(adressTextInputEditText)
             linearLayout.addView(addressTextInputLayout)
-            adressTextInputEditText.setOnTouchListener(object : View.OnTouchListener {
-                val DRAWABLE_RIGHT = 0
-                override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-                    when (p1?.action) {
-                        MotionEvent.ACTION_UP -> {
-                            if (p1.getRawX() >= (adressTextInputEditText.right - adressTextInputEditText.compoundDrawables[DRAWABLE_RIGHT].bounds.width())) {
-                                val builder: AlertDialog.Builder =
-                                    AlertDialog.Builder(
-                                        requireContext(),
-                                        R.style.ThemeOverlay_AppCompat_Dialog_Alert
-                                    )
-                                builder.setTitle(getString(R.string.create_address_operation))
-                                val layout = LinearLayout(context)
-                                layout.orientation = LinearLayout.VERTICAL
-                                val countrySpinnerArray = ArrayList<CustomCityModel>()
-                                var i = 0
-                                while (i < editProfileViewModel.getAllCountryResponseMutable.value?.getAllCountryValue!!.size) {
-                                    countrySpinnerArray.add(
-                                        CustomCityModel(
-                                            editProfileViewModel.getAllCountryResponseMutable.value?.getAllCountryValue!![i].name,
-                                            editProfileViewModel.getAllCountryResponseMutable.value?.getAllCountryValue!![i].id
-                                        )
-                                    )
-                                    i++
-                                }
-                                val countrySpinner = Spinner(context)
-                                val countrySpinnerArrayAdapter = ArrayAdapter<CustomCityModel>(
-                                    requireContext(),
-                                    android.R.layout.simple_spinner_dropdown_item,
-                                    countrySpinnerArray
-                                )
-                                countrySpinner.adapter = countrySpinnerArrayAdapter
-                                countrySpinner.onItemSelectedListener =
-                                    object : AdapterView.OnItemSelectedListener {
-                                        override fun onItemSelected(
-                                            p0: AdapterView<*>?,
-                                            p1: View?,
-                                            p2: Int,
-                                            p3: Long
-                                        ) {
-                                            val selectedCountry: CustomCityModel =
-                                                p0!!.selectedItem as CustomCityModel
-                                            countryID = selectedCountry.id
-                                            countryName = selectedCountry.name
-                                        }
-
-                                        override fun onNothingSelected(p0: AdapterView<*>?) {
-
-                                        }
-
-                                    }
-
-
-                                val citySpinnerArray = ArrayList<CustomCityModel>()
-                                var j = 0
-                                while (j < editProfileViewModel.getAllCityResponseMutable.value?.getAllCityValue!!.size) {
-                                    citySpinnerArray.add(
-                                        CustomCityModel(
-                                            editProfileViewModel.getAllCityResponseMutable.value?.getAllCityValue!![j].name,
-                                            editProfileViewModel.getAllCityResponseMutable.value?.getAllCityValue!![j].id
-                                        )
-                                    )
-                                    j++
-                                }
-                                val citySpinner = Spinner(context)
-                                val citySpinnerArrayAdapter = ArrayAdapter<CustomCityModel>(
-                                    requireContext(),
-                                    android.R.layout.simple_spinner_dropdown_item,
-                                    citySpinnerArray
-                                )
-                                citySpinner.adapter = citySpinnerArrayAdapter
-                                val countySpinner = Spinner(context)
-                                citySpinner.onItemSelectedListener =
-                                    object : AdapterView.OnItemSelectedListener {
-                                        override fun onItemSelected(
-                                            p0: AdapterView<*>?,
-                                            p1: View?,
-                                            p2: Int,
-                                            p3: Long
-                                        ) {
-                                            val selectedCity: CustomCityModel =
-                                                p0!!.selectedItem as CustomCityModel
-                                            cityID = selectedCity.id
-                                            cityName = selectedCity.name
-                                            editProfileViewModel.getAllCounty(selectedCity.id)
-                                            editProfileViewModel.getAllCountyResponseMutable.observe(
-                                                viewLifecycleOwner,
-                                                Observer {
-                                                    var k = 0
-                                                    var countySpinnerArray =
-                                                        ArrayList<CustomCityModel>()
-                                                    while (k < editProfileViewModel.getAllCountyResponseMutable.value?.getAllCountyValue!!.size) {
-                                                        countySpinnerArray.add(
-                                                            CustomCityModel(
-                                                                editProfileViewModel.getAllCountyResponseMutable.value?.getAllCountyValue!![k].name,
-                                                                editProfileViewModel.getAllCountyResponseMutable.value?.getAllCountyValue!![k].id
-                                                            )
-                                                        )
-                                                        k++
-                                                    }
-                                                    val countySpinnerArrayAdapter =
-                                                        ArrayAdapter<CustomCityModel>(
-                                                            requireContext(),
-                                                            android.R.layout.simple_spinner_dropdown_item,
-                                                            countySpinnerArray
-                                                        )
-                                                    countySpinner.adapter =
-                                                        countySpinnerArrayAdapter
-                                                })
-
-
-                                        }
-
-                                        override fun onNothingSelected(p0: AdapterView<*>?) {
-
-                                        }
-                                    }
-
-
-
-
-                                countySpinner.onItemSelectedListener =
-                                    object : AdapterView.OnItemSelectedListener {
-                                        override fun onItemSelected(
-                                            p0: AdapterView<*>?,
-                                            p1: View?,
-                                            p2: Int,
-                                            p3: Long
-                                        ) {
-                                            val selectedCounty: CustomCityModel =
-                                                p0!!.selectedItem as CustomCityModel
-                                            countyID = selectedCounty.id
-                                            countyName = selectedCounty.name
-                                        }
-
-                                        override fun onNothingSelected(p0: AdapterView<*>?) {
-
-                                        }
-
-                                    }
-
-                                val displayAddressEditText = EditText(requireContext())
-                                displayAddressEditText.hint = getString(R.string.enter_address)
-                                val priorityAddressEditText = EditText(requireContext())
-                                priorityAddressEditText.hint = (getString(R.string.enter_priority))
-                                priorityAddressEditText.inputType = InputType.TYPE_CLASS_NUMBER
-
-
-                                layout.addView(countrySpinner)
-                                layout.addView(citySpinner)
-                                layout.addView(countySpinner)
-                                layout.addView(displayAddressEditText)
-                                layout.addView(priorityAddressEditText)
-                                builder.setView(layout)
-                                builder.setPositiveButton(
-                                    getString(R.string.create_text),
-                                    DialogInterface.OnClickListener { _, _ ->
-                                        editProfileViewModel.createAddress(
-                                            requireContext(),
-                                            2,
-                                            countryName,
-                                            countryID,
-                                            cityID,
-                                            countyName,
-                                            countyID,
-                                            cityName,
-                                            displayAddressEditText.text.toString(),
-                                            priorityAddressEditText.text.toString().toInt()
-                                        )
-                                        Navigation.findNavController(requireView()).navigate(action)
-                                    })
-                                builder.setNegativeButton(getString(R.string.cancel),
-                                    DialogInterface.OnClickListener { dialog, _ ->
-                                        dialog.cancel()
-                                    })
-                                val dialog: AlertDialog = builder.create()
-                                dialog.show()
-                                dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-                                displayAddressEditText.addTextChangedListener(object : TextWatcher {
-                                    override fun beforeTextChanged(
-                                        p0: CharSequence?,
-                                        p1: Int,
-                                        p2: Int,
-                                        p3: Int
-                                    ) {
-
-                                    }
-
-                                    override fun onTextChanged(
-                                        p0: CharSequence?,
-                                        p1: Int,
-                                        p2: Int,
-                                        p3: Int
-                                    ) {
-
-                                    }
-
-                                    override fun afterTextChanged(p0: Editable?) {
-                                        if (p0.toString().isNullOrEmpty()) {
-                                            isButtonEnabledAddress.value = false
-                                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                                                isButtonEnabledAddress.value!! && isButtonEnabledPriority.value!!
-                                        } else {
-                                            isButtonEnabledAddress.value = true
-                                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                                                isButtonEnabledAddress.value!! && isButtonEnabledPriority.value!!
-                                        }
-                                    }
-
-                                })
-                                priorityAddressEditText.addTextChangedListener(object :
-                                    TextWatcher {
-                                    override fun beforeTextChanged(
-                                        p0: CharSequence?,
-                                        p1: Int,
-                                        p2: Int,
-                                        p3: Int
-                                    ) {
-
-                                    }
-
-                                    override fun onTextChanged(
-                                        p0: CharSequence?,
-                                        p1: Int,
-                                        p2: Int,
-                                        p3: Int
-                                    ) {
-
-                                    }
-
-                                    override fun afterTextChanged(p0: Editable?) {
-                                        if (p0.toString().isNullOrEmpty()) {
-                                            isButtonEnabledPriority.value = false
-                                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                                                isButtonEnabledPriority.value!! && isButtonEnabledAddress.value!!
-                                        } else {
-                                            isButtonEnabledPriority.value = true
-                                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                                                isButtonEnabledPriority.value!! && isButtonEnabledAddress.value!!
-                                        }
-                                    }
-
-                                })
-                                return true
-                            }
-                        }
-                    }
-                    return false
-                }
-            })
         })
         editProfileViewModel.getAllWebAddressResponseMutable.observe(viewLifecycleOwner, Observer {
             var x = 0
@@ -741,8 +313,7 @@ class EditProfileFragment : Fragment() {
                 textInputLayoutParams.setMargins(0, 0, 0, 10)
                 textInputLayout.layoutParams = textInputLayoutParams
 
-                textInputLayoutArrayWebAddress.add(textInputLayout)
-                webAddressEditText = WebAddressEditText(
+                updateWebAddressEditText = UpdateWebAddressEditText(
                     requireContext(),
                     it.getAllWebAddressValue[x].id,
                     editProfileViewModel,
@@ -754,21 +325,22 @@ class EditProfileFragment : Fragment() {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
-                webAddressEditText.setCompoundDrawablesWithIntrinsicBounds(
+                updateWebAddressEditText.setCompoundDrawablesWithIntrinsicBounds(
                     R.drawable.user_web_address,
                     0,
                     R.drawable.remove_black,
                     0
                 )
-                webAddressEditText.compoundDrawablePadding = 10
-                webAddressEditText.inputType = InputType.TYPE_NULL
-                webAddressEditText.isFocusableInTouchMode = false
-                webAddressEditText.isSingleLine = false
-                webAddressEditText.layoutParams = textInputEditTextParams
-                webAddressEditText.setText(it.getAllWebAddressValue[x].url)
-                textInputEditTextArrayWebAddress.add(webAddressEditText)
-                textInputLayoutArrayWebAddress[x].addView(textInputEditTextArrayWebAddress[x])
-                linearLayout.addView(textInputLayoutArrayWebAddress[x])
+                updateWebAddressEditText.compoundDrawablePadding = 10
+                updateWebAddressEditText.inputType = InputType.TYPE_NULL
+                updateWebAddressEditText.isFocusableInTouchMode = false
+                updateWebAddressEditText.isSingleLine = false
+                updateWebAddressEditText.layoutParams = textInputEditTextParams
+                updateWebAddressEditText.setText(it.getAllWebAddressValue[x].url)
+                val webAddressListElement = InputEditTextModel(textInputLayout,updateWebAddressEditText)
+                webAddressList.add(webAddressListElement)
+                webAddressList[x].textInputLayout.addView(webAddressList[x].textInputEditText)
+                linearLayout.addView(webAddressList[x].textInputLayout)
                 x++
             }
             val webAddressTextInputLayout = TextInputLayout(
@@ -786,7 +358,7 @@ class EditProfileFragment : Fragment() {
             webAddressTextInputLayoutParams.setMargins(0, 0, 0, 10)
             webAddressTextInputLayout.layoutParams = webAddressTextInputLayoutParams
 
-            val webAddressTextInputEditText = TextInputEditText(requireContext())
+            val webAddressTextInputEditText = CreateWebAddressEditText(requireContext(),editProfileViewModel,requireView(),action)
             val phoneTextInputEditTextParams: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -802,79 +374,6 @@ class EditProfileFragment : Fragment() {
 
             webAddressTextInputLayout.addView(webAddressTextInputEditText)
             linearLayout.addView(webAddressTextInputLayout)
-            webAddressTextInputEditText.setOnTouchListener(object : View.OnTouchListener {
-                val DRAWABLE_RIGHT = 0
-                override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-                    when (p1?.action) {
-                        MotionEvent.ACTION_UP -> {
-                            if (p1.getRawX() >= (webAddressTextInputEditText.right - webAddressTextInputEditText.compoundDrawables[DRAWABLE_RIGHT].bounds.width())) {
-                                if (webAddressTextInputEditText.text.toString().isNullOrEmpty()) {
-                                    webAddressTextInputEditText.error = getString(R.string.property_cannot_be_null)
-                                } else {
-                                    val builder: AlertDialog.Builder =
-                                        AlertDialog.Builder(
-                                            requireContext(),
-                                            R.style.ThemeOverlay_AppCompat_Dialog_Alert
-                                        )
-                                    builder.setTitle(getString(R.string.create_web_address_operation))
-                                    val layout = LinearLayout(context)
-                                    layout.orientation = LinearLayout.VERTICAL
-                                    val priorityEditText = EditText(context)
-                                    priorityEditText.hint = getString(R.string.enter_priority)
-                                    priorityEditText.inputType = InputType.TYPE_CLASS_NUMBER
-                                    layout.addView(priorityEditText)
-                                    builder.setView(layout)
-                                    builder.setPositiveButton(
-                                        getString(R.string.create_text),
-                                        DialogInterface.OnClickListener { _, _ ->
-                                            val priority = priorityEditText.text.toString()
-                                            editProfileViewModel.createWebAddressFromWebAddressEditText(
-                                                webAddressTextInputEditText.text.toString(),
-                                                priority.toInt(),
-                                                requireContext()
-                                            )
-                                            Navigation.findNavController(requireView()).navigate(action)
-                                        })
-                                    builder.setNegativeButton(getString(R.string.cancel),
-                                        DialogInterface.OnClickListener { dialog, _ ->
-                                            dialog.cancel()
-                                        })
-                                    val dialog: AlertDialog = builder.create()
-                                    dialog.show()
-                                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-                                    priorityEditText.addTextChangedListener(object : TextWatcher {
-                                        override fun beforeTextChanged(
-                                            p0: CharSequence?,
-                                            p1: Int,
-                                            p2: Int,
-                                            p3: Int
-                                        ) {
-
-                                        }
-
-                                        override fun onTextChanged(
-                                            p0: CharSequence?,
-                                            p1: Int,
-                                            p2: Int,
-                                            p3: Int
-                                        ) {
-
-                                        }
-
-                                        override fun afterTextChanged(p0: Editable?) {
-                                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                                                !p0.toString().isNullOrEmpty()
-                                        }
-
-                                    })
-                                    return true
-                                }
-                            }
-                        }
-                    }
-                    return false
-                }
-            })
         })
         editProfileViewModel.isProgressBarDismissed.observe(viewLifecycleOwner, Observer {
             if(it){
@@ -931,5 +430,4 @@ class EditProfileFragment : Fragment() {
             dialog.window!!.attributes = layoutParams
         }
     }
-
 }

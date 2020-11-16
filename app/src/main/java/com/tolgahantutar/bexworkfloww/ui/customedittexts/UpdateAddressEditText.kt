@@ -9,23 +9,17 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.navigation.Navigation
 import com.google.android.material.textfield.TextInputEditText
 import com.tolgahantutar.bexworkfloww.R
 import com.tolgahantutar.bexworkfloww.data.models.CustomCityModel
-import com.tolgahantutar.bexworkfloww.data.models.requestbodies.CreateAddressBody
-import com.tolgahantutar.bexworkfloww.data.models.requestbodies.RequestBodyCountry
-import com.tolgahantutar.bexworkfloww.data.models.requestbodies.RequestBodyCounty
-import com.tolgahantutar.bexworkfloww.data.models.requestbodies.RequestBodyState
 import com.tolgahantutar.bexworkfloww.ui.editprofile.EditProfileFragmentDirections
 import com.tolgahantutar.bexworkfloww.ui.editprofile.EditProfileViewModel
 
-class AddressEditText constructor(
+class UpdateAddressEditText constructor(
     context: Context,
     countryName:String,
     countryID: Int,
@@ -41,7 +35,7 @@ class AddressEditText constructor(
     view: View
 
 ): TextInputEditText(context){
-    val editText = this@AddressEditText
+    val editText = this@UpdateAddressEditText
     var countryIDUpdate = 0
     var countryNameUpdate=""
     var cityIDUpdate = 0

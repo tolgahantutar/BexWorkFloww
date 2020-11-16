@@ -30,21 +30,21 @@
     <string name="update">Güncelle</string>
     <string name="cancel">Vazgeç</string>
     <string name="delete_address_operation">Adres Silme İşlemi</string>
-    <string name="sure_delete_address">\"Adresi silmek istediğinize emin misiniz ? \"</string>
+    <string name="sure_delete_address">\Adresi silmek istediğinize emin misiniz ? \</string>
     <string name="update_email">Email Güncelle.</string>
     <string name="type_your_mail_please">Emailinizi Yazın.</string>
     <string name="email_delete_operation">Email Silme İşlemi</string>
-    <string name="sure_delete_mail">\"Maili silmek istediğinize emin misiniz ? \"</string>
+    <string name="sure_delete_mail">\Maili silmek istediğinize emin misiniz ? \</string>
     <string name="update_phone">Telefon Güncelle.</string>
     <string name="type_your_phone_please">Telefonunuzu Yazın.</string>
     <string name="delete_phone_operation">Telefon Silme İşlemi</string>
-    <string name="sure_delete_phone">\"Telefonu silmek istediğinize emin misiniz ? \"</string>
+    <string name="sure_delete_phone">\Telefonu silmek istediğinize emin misiniz ? \</string>
     <string name="delete_phone">Sil</string>
     <string name="update_web_adress_operation">Web Adresi Güncelle.</string>
     <string name="enter_your_web_address">Web Adresinizi Yazın.</string>
     <string name="update_web_address">Güncelle</string>
     <string name="delete_web_address_operation">Web Adres Silme İşlemi</string>
-    <string name="sure_delete_web_address">\"Web adresi silmek istediğinize emin misiniz ? \"</string>
+    <string name="sure_delete_web_address">\Web adresi silmek istediğinize emin misiniz ? \</string>
     <string name="delete_web_address">Sil</string>
     <string name="property_cannot_be_null">Bu alan boş bırakılamaz!</string>
     <string name="create_email_operation">Email Oluşturma İşlemi</string>
@@ -53,6 +53,5 @@
     <string name="invalid_phone">Geçersiz format! örn: +905373822275</string>
     <string name="create_phone_operation">Telefon Oluşturma İşlemi</string>
     <string name="create_address_operation">Adres Oluşturma İşlemi</string>
-    <string name="enter_address">Adresi girin</string>
     <string name="create_web_address_operation">Web Adresi Oluşturma İşlemi</string>
 </resources>
