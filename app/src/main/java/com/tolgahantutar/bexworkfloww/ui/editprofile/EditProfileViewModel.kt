@@ -1,20 +1,30 @@
 package com.tolgahantutar.bexworkfloww.ui.editprofile
 
 
-import android.view.View
+import android.content.Context
 import android.widget.Toast
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tolgahantutar.bexworkfloww.data.network.repositories.CreateContactRepository
-import com.tolgahantutar.bexworkfloww.data.network.repositories.GetUserRepository
-import com.tolgahantutar.bexworkfloww.data.network.repositories.UpdateProfileRepository
-import com.tolgahantutar.bexworkfloww.data.network.responses.*
+import com.tolgahantutar.bexworkfloww.data.models.requestbodies.*
+import com.tolgahantutar.bexworkfloww.data.network.repositories.createrepository.CreateContactRepository
+import com.tolgahantutar.bexworkfloww.data.network.repositories.deleterepository.DeleteContactRepository
+import com.tolgahantutar.bexworkfloww.data.network.repositories.getrepository.*
+import com.tolgahantutar.bexworkfloww.data.network.repositories.updaterepository.UpdateProfileRepository
+import com.tolgahantutar.bexworkfloww.data.network.responses.createresponses.CreateAddressResponse
+import com.tolgahantutar.bexworkfloww.data.network.responses.createresponses.CreateMailResponse
+import com.tolgahantutar.bexworkfloww.data.network.responses.createresponses.CreatePhoneResponse
+import com.tolgahantutar.bexworkfloww.data.network.responses.createresponses.CreateWebAddressResponse
+import com.tolgahantutar.bexworkfloww.data.network.responses.deleteresponses.DeleteMailResponse
+import com.tolgahantutar.bexworkfloww.data.network.responses.deleteresponses.DeletePhoneResponse
+import com.tolgahantutar.bexworkfloww.data.network.responses.deleteresponses.DeleteWebAddressResponse
+import com.tolgahantutar.bexworkfloww.data.network.responses.getresponses.*
+import com.tolgahantutar.bexworkfloww.data.network.responses.updateresponses.UpdateMailResponse
+import com.tolgahantutar.bexworkfloww.data.network.responses.updateresponses.UpdatePhoneResponse
+import com.tolgahantutar.bexworkfloww.data.network.responses.updateresponses.UpdateWebAddressResponse
 import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonAuthID
 import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonDomainKey
-import com.tolgahantutar.bexworkfloww.validations.EmailValidation
-import com.tolgahantutar.bexworkfloww.validations.PhoneValidation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,14 +33,28 @@ class EditProfileViewModel @ViewModelInject constructor(
     private val getUserRepository: GetUserRepository,
     private val updateProfileRepository: UpdateProfileRepository,
     private val createContactRepository: CreateContactRepository,
+    private val deleteContactRepository: DeleteContactRepository,
+    private val getAllEmailsRepository: GetAllEmailsRepository,
+    private val getAllPhonesRepository: GetAllPhonesRepository,
+    private val getAllAddressRepository: GetAllAddressRepository,
+    private val getAllWebAddressRepository: GetAllWebAddressRepository,
+    private val getAllCountryRepository: GetAllCountryRepository,
+    private val getAllCityRepository: GetAllCityRepository,
+    private val getAllCountyRepository: GetAllCountyRepository,
     private val sharedPrefSingletonAuthID: SharedPrefSingletonAuthID,
     private val sharedPrefSingletonDomainKey: SharedPrefSingletonDomainKey
 ) : ViewModel() {
+    val isRefreshFragment= MutableLiveData<Boolean>(false)
+
     val getUserResponseMutable = MutableLiveData<GetUserResponse>()
-    private val isPhoneChanged = MutableLiveData<Boolean>(false)
-    private val isEmailChanged = MutableLiveData<Boolean>(false)
-    private val isAddressChanged = MutableLiveData<Boolean>(false)
-    private val isWebAddressChanged = MutableLiveData<Boolean>(false)
+    val getAllEmailResponseMutable = MutableLiveData<GetAllEmailsResponse>()
+    val getAllPhonesResponseMutable = MutableLiveData<GetAllPhonesResponse>()
+    val getAllAddressResponseMutable = MutableLiveData<GetAllAddressResponse>()
+    val getAllWebAddressResponseMutable = MutableLiveData<GetAllWebAddressResponse>()
+    val getAllCountryResponseMutable = MutableLiveData<GetAllCountryResponse>()
+    val getAllCityResponseMutable = MutableLiveData<GetAllCityResponse>()
+    val getAllCountyResponseMutable = MutableLiveData<GetAllCountyResponse>()
+    val isProgressBarDismissed = MutableLiveData<Boolean>(false)
     //Email
     private var emailContactID: Int = 0
     private var emailPriority : Int = 0
@@ -39,96 +63,212 @@ class EditProfileViewModel @ViewModelInject constructor(
     private var phoneContactID: Int = 0
     private var phonePriority : Int = 0
     private var phoneID : Int = 0
-    val isEnabled = MutableLiveData<Boolean>(false)
     //Web Address
     private var webContactID: Int = 0
     private var webPriority: Int = 0
     private var webID: Int = 0
+    //Address
+    private var addressContactID: Int = 0
+    private var addressPriority: Int = 0
+    private var addressID: Int = 0
+
     fun executeUserResponse() {
             viewModelScope.launch {
                 val getUserResponse: GetUserResponse = getUser(sharedPrefSingletonAuthID.getSomeStringValue(), "Bearer "+sharedPrefSingletonDomainKey.getSomeStringValue()!!)
                 getUserResponseMutable.value = getUserResponse
                 //Email
-                emailContactID = getUserResponseMutable.value!!.getUserValue.contact.defaultEmail.contactId.toInt()
+                emailContactID = getUserResponseMutable.value!!.getUserValue.contact.relatedEntityId.toInt()
                 emailPriority = getUserResponseMutable.value!!.getUserValue.contact.defaultEmail.priority.toInt()
                 emailID = getUserResponseMutable.value!!.getUserValue.contact.defaultEmail.id.toInt()
                 //Phone
-                phoneContactID = getUserResponseMutable.value!!.getUserValue.contact.defaultPhoneModel.contactId.toInt()
+                phoneContactID = getUserResponseMutable.value!!.getUserValue.contact.relatedEntityId.toInt()
                 phonePriority = getUserResponseMutable.value!!.getUserValue.contact.defaultPhoneModel.priority.toInt()
                 phoneID = getUserResponseMutable.value!!.getUserValue.contact.defaultPhoneModel.id.toInt()
                 //Web Address
-                webContactID = getUserResponseMutable.value!!.getUserValue.contact.defaultWebAddressModel.contactId.toInt()
+                webContactID = getUserResponseMutable.value!!.getUserValue.contact.relatedEntityId.toInt()
                 webPriority = getUserResponseMutable.value!!.getUserValue.contact.defaultWebAddressModel.priority.toInt()
                 webID = getUserResponseMutable.value!!.getUserValue.contact.defaultWebAddressModel.id.toInt()
+                //Address
+                addressContactID = getUserResponseMutable.value!!.getUserValue.contact.relatedEntityId.toInt()
+                addressPriority = getUserResponseMutable.value!!.getUserValue.contact.defaultAdressModel.priority.toInt()
+                addressID = getUserResponseMutable.value!!.getUserValue.contact.defaultAdressModel.id.toInt()
+
+                if(getUserResponse.result){
+                    val getAllEmailsResponse: GetAllEmailsResponse = getAllEmailsAsync(emailContactID,-1,0)
+                    if(getAllEmailsResponse.result){
+                        getAllEmailResponseMutable.value = getAllEmailsResponse
+                    }
+                    val getAllPhonesResponse: GetAllPhonesResponse = getAllPhonesAsync(phoneContactID,-1,0)
+                    if (getAllPhonesResponse.result){
+                        getAllPhonesResponseMutable.value = getAllPhonesResponse
+                    }
+                    val getAllAddressResponse: GetAllAddressResponse = getAllAddressAsync(addressContactID,-1,0)
+                    if(getAllAddressResponse.result){
+                        getAllAddressResponseMutable.value = getAllAddressResponse
+                    }
+                    val getAllWebAddressResponse: GetAllWebAddressResponse = getAllWebAddressAsync(webContactID,-1,0)
+                    if(getAllWebAddressResponse.result){
+                        getAllWebAddressResponseMutable.value = getAllWebAddressResponse
+                    }
+                    val getAllCountryResponse: GetAllCountryResponse = getAllCountryAsync(2, 0, -1)
+                    getAllCountryResponseMutable.value = getAllCountryResponse
+
+                    val getAllCityResponse: GetAllCityResponse = getAllCityAsync(1,0,0)
+                    getAllCityResponseMutable.value = getAllCityResponse
+                    isProgressBarDismissed.value=true
+                    isProgressBarDismissed.value=false
+                }
             }
     }
-    fun onClickSaveButton(email: String,phone:String,webAddress:String,view: View){
-        viewModelScope.launch {
-            if(isEmailChanged.value==true){
-                val updateMailResponse: UpdateMailResponse = updateMail(emailContactID,email,emailPriority,emailID)
-                if (updateMailResponse.result){
-                    Toast.makeText(view.context, "Email Updated Successfully", Toast.LENGTH_SHORT).show()
-                }
-            }
-            if(isPhoneChanged.value==true){
 
-                val updatePhoneResponse: UpdatePhoneResponse = updatePhone(phoneContactID,phonePriority,"PhoneNumber","+90",
-                    phone.substring(2),"","","Telefon : +90 "+phone.substring(2),
-                phone,0,"","2020-11-05T08:47:08.246Z",phone,phoneID)
-                if(updatePhoneResponse.result){
-                    Toast.makeText(view.context, "Phone Updated Successfully", Toast.LENGTH_SHORT).show()
+    fun getAllCounty(parentID: Int){
+        viewModelScope.launch {
+                val getAllCountyResponse: GetAllCountyResponse = getAllCountyAsync(parentID,0,0)
+                if(getAllCountyResponse.result) {
+                    getAllCountyResponseMutable.value = getAllCountyResponse
                 }
+
+        }
+    }
+    fun createAddress(context: Context,addressBookID: Int,countryName: String,countryID:Int,cityID: Int,countyName:String,countyID: Int,
+    cityName:String,body:String,priority: Int){
+        val createAddressBody = CreateAddressBody(addressContactID,
+            RequestBodyCountry(addressBookID,countryName,countryID), RequestBodyCounty
+        (cityID,countyName,countyID), RequestBodyState
+        (countryID,"",0),RequestBodyCity
+        (countryID,cityName,cityID),body,0,0,0,0,0,"",priority,"",0
+        )
+        viewModelScope.launch {
+            val createAddressResponse: CreateAddressResponse = createAddress(createAddressBody)
+            if(createAddressResponse.result){
+                Toast.makeText(context, "Address Created Successfully", Toast.LENGTH_SHORT).show()
             }
-            if(isWebAddressChanged.value==true){
-                val updateWebAddressResponse : UpdateWebAddressResponse = updateWebAddress(webContactID,webAddress,webPriority,webID)
-                if(updateWebAddressResponse.result){
-                    Toast.makeText(view.context, "Web Address Updated Successfully", Toast.LENGTH_SHORT).show()
+
+        }
+    }
+
+        fun deleteAddress(context: Context,addressBookID: Int,countryName: String,countryID:Int,cityID: Int,countyName:String,countyID: Int,
+                          cityName:String,body:String,priority: Int,id:Int){
+            val deleteAddressBody = CreateAddressBody(addressContactID,
+                RequestBodyCountry(addressBookID,countryName,countryID), RequestBodyCounty
+                    (cityID,countyName,countyID), RequestBodyState
+                    (countryID,"",0),RequestBodyCity
+                    (countryID,cityName,cityID),body,0,0,0,0,0,"",priority,"",id
+            )
+            viewModelScope.launch {
+                val deleteAddressResponse: CreateAddressResponse = deleteAddress(deleteAddressBody)
+                if(deleteAddressResponse.result){
+                    Toast.makeText(context, "Address Deleted Successfully", Toast.LENGTH_SHORT).show()
                 }
             }
         }
-    }
-     fun createMail(address: String, priority: Int,view: View?){
+
+    fun updateAddress(context: Context,addressBookID: Int,countryName: String,countryID:Int,cityID: Int,countyName:String,countyID: Int,
+                      cityName:String,body:String,priority: Int,id:Int){
+        val updateAddressBody = CreateAddressBody(addressContactID,
+            RequestBodyCountry(addressBookID,countryName,countryID), RequestBodyCounty
+                (cityID,countyName,countyID), RequestBodyState
+                (countryID,"",0),RequestBodyCity
+                (countryID,cityName,cityID),body,0,0,0,0,0,"",priority,"",id
+        )
         viewModelScope.launch {
-            val createMailResponse: CreateMailResponse = createMailAsync(emailContactID, address, priority,0)
+            val updateAddressResponse: CreateAddressResponse = updateAddress(updateAddressBody)
+            if(updateAddressResponse.result){
+                Toast.makeText(context, "Address Updated Successfully", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun updateMailFromMailEditText(mail: String,priority: Int,id:Int,context: Context){
+        viewModelScope.launch {
+
+            val updateMailResponse: UpdateMailResponse = updateMail(emailContactID,mail,priority,id)
+            if (updateMailResponse.result){
+                Toast.makeText(context, "Email Updated Successfully", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    fun deleteMailFromMailEditText(mail: String,priority: Int,id:Int,context: Context){
+        viewModelScope.launch {
+            val deleteMailResponse: DeleteMailResponse = deleteMail(emailContactID,mail,priority,id)
+            if (deleteMailResponse.result){
+                Toast.makeText(context, "Email Deleted Successfully", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    fun createMailFromMailEditText(mail: String,priority: Int,context: Context){
+        viewModelScope.launch {
+            val createMailResponse: CreateMailResponse = createMail(emailContactID,mail,priority,0)
             if (createMailResponse.result){
-                Toast.makeText(view!!.context, "Email created successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Email Created Successfully", Toast.LENGTH_SHORT).show()
             }
         }
     }
-
-
-    fun onPhoneTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        if(PhoneValidation().checkPhoneNumber(s.toString())) {
-            isPhoneChanged.value =
-                s.toString() != getUserResponseMutable.value?.getUserValue?.contact?.defaultPhoneModel?.cleanBody
-        }else{
-           isPhoneChanged.value=false
+    fun updatePhoneFromMailEditText(phone: String,priority: Int,id:Int,context: Context){
+        viewModelScope.launch {
+            val updatePhoneResponse: UpdatePhoneResponse = updatePhone(phoneContactID,priority,"PhoneNumber","+90",
+                phone.substring(2),"","","Telefon : +90 "+phone.substring(2),
+                phone,0,"","2020-11-05T08:47:08.246Z",phone,id)
+            if (updatePhoneResponse.result){
+                Toast.makeText(context, "Phone Updated Successfully", Toast.LENGTH_SHORT).show()
+            }
         }
-        isEnabled.value = isPhoneChanged.value==true||isEmailChanged.value==true||isAddressChanged.value==true||isWebAddressChanged.value==true
     }
-    fun onEmailTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        if(EmailValidation().checkEmail(s.toString())) {
-            isEmailChanged.value =
-                s.toString() != getUserResponseMutable.value?.getUserValue?.contact?.defaultEmail?.address
+    fun deletePhoneFromPhoneEditText(phone: String,priority: Int,id:Int,context: Context){
+        viewModelScope.launch {
+            val deletePhoneResponse: DeletePhoneResponse = deletePhone(phoneContactID,priority,"PhoneNumber","+90",
+                phone.substring(2),"","","Telefon : +90 "+phone.substring(2),
+                phone,0,"","2020-11-05T08:47:08.246Z",phone,id)
+            if (deletePhoneResponse.result){
+                Toast.makeText(context, "Phone Deleted Successfully", Toast.LENGTH_SHORT).show()
+            }
         }
-        else{
-            isEmailChanged.value=false
+    }
+    fun createPhoneFromPhoneEditText(phone: String,priority: Int,context: Context){
+        viewModelScope.launch {
+            val createPhoneResponse: CreatePhoneResponse = createPhone(phoneContactID,priority,"PhoneNumber","+90",
+                phone.substring(2),"","","Telefon : +90 "+phone.substring(2),
+                phone,0,"","2020-11-05T08:47:08.246Z",phone,0)
+            if(createPhoneResponse.result){
+                Toast.makeText(context, "Phone Created Successfully", Toast.LENGTH_SHORT).show()
+            }
         }
-        isEnabled.value = isPhoneChanged.value==true||isEmailChanged.value==true||isAddressChanged.value==true||isWebAddressChanged.value==true
     }
-    fun onAddressTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        isAddressChanged.value = s.toString() != getUserResponseMutable.value?.getUserValue?.contact?.defaultAdressModel?.displayBody
-        isEnabled.value = isPhoneChanged.value==true||isEmailChanged.value==true||isAddressChanged.value==true||isWebAddressChanged.value==true
+    fun updateWebAddressFromWebAddressEditText(url: String,priority: Int,id:Int,context: Context){
+        viewModelScope.launch {
+            val updateWebAddressResponse : UpdateWebAddressResponse = updateWebAddress(webContactID,url,priority,id)
+            if(updateWebAddressResponse.result){
+                Toast.makeText(context, "Web Address Updated Successfully", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
-    fun onWebAddressTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        isWebAddressChanged.value = s.toString() != getUserResponseMutable.value?.getUserValue?.contact?.defaultWebAddressModel?.url
-        isEnabled.value = isPhoneChanged.value==true||isEmailChanged.value==true||isAddressChanged.value==true||isWebAddressChanged.value==true
+    fun deleteWebAddressFromWebAddressEditText(url: String,priority: Int,id:Int,context: Context){
+        viewModelScope.launch {
+            val deleteWebAddressResponse : DeleteWebAddressResponse = deleteWebAddress(webContactID,url,priority,id)
+            if(deleteWebAddressResponse.result){
+                Toast.makeText(context, "Web Address Deleted Successfully", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
-
+    fun createWebAddressFromWebAddressEditText(url: String,priority: Int,context: Context){
+        viewModelScope.launch {
+            val createWebAddressResponse: CreateWebAddressResponse = createWebAddress(webContactID,url,priority,0)
+            if(createWebAddressResponse.result){
+                Toast.makeText(context, "Web Address Created Successfully", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
     private suspend fun getUser(
         id: Int,
         authorization: String
-    )= withContext(Dispatchers.IO){getUserRepository.getUser(id, authorization)}
+    )= withContext(Dispatchers.Main){getUserRepository.getUser(id, authorization)}
+
+    private suspend fun createMail(
+        contactID: Int,
+        address: String,
+        priority: Int,
+        id: Int
+    )= withContext(Dispatchers.IO){createContactRepository.createMail(contactID, address, priority, id)}
 
     private suspend fun updateMail(
     contactID: Int,
@@ -136,6 +276,13 @@ class EditProfileViewModel @ViewModelInject constructor(
     priority: Int,
     id: Int
     )= withContext(Dispatchers.IO){updateProfileRepository.updateMail(contactID,address,priority,id)}
+
+    private suspend fun deleteMail(
+        contactID: Int,
+        address: String,
+        priority: Int,
+        id: Int
+    ) = withContext(Dispatchers.IO){deleteContactRepository.deleteMail(contactID,address, priority, id)}
     private suspend fun updatePhone(
         contactID: Int,
         priority: Int,
@@ -154,6 +301,42 @@ class EditProfileViewModel @ViewModelInject constructor(
     )= withContext(Dispatchers.IO){updateProfileRepository.updatePhone(contactID,priority,type,countryCode,number,extension,availability,displayBody,cleanBody,
         isVerified,verificationCode,verificationDate,basicPhoneNumber,id)}
 
+    private suspend fun deletePhone(
+        contactID: Int,
+        priority: Int,
+        type: String,
+        countryCode: String,
+        number: String,
+        extension: String,
+        availability: String,
+        displayBody: String,
+        cleanBody: String,
+        isVerified: Int,
+        verificationCode: String,
+        verificationDate: String,
+        basicPhoneNumber: String,
+        id: Int
+    ) = withContext(Dispatchers.IO){deleteContactRepository.deletePhone(contactID,priority,type,countryCode,number,extension,availability,displayBody,cleanBody,
+        isVerified,verificationCode,verificationDate,basicPhoneNumber,id)}
+
+    private suspend fun createPhone(
+        contactID: Int,
+        priority: Int,
+        type: String,
+        countryCode: String,
+        number: String,
+        extension: String,
+        availability: String,
+        displayBody: String,
+        cleanBody: String,
+        isVerified: Int,
+        verificationCode: String,
+        verificationDate: String,
+        basicPhoneNumber: String,
+        id: Int
+    ) = withContext(Dispatchers.IO){createContactRepository.createPhone(contactID,priority,type,countryCode,number,extension,availability,displayBody,cleanBody,
+        isVerified,verificationCode,verificationDate,basicPhoneNumber,id)}
+
     private suspend fun updateWebAddress(
         contactID: Int,
         url: String,
@@ -161,10 +344,71 @@ class EditProfileViewModel @ViewModelInject constructor(
         id: Int
     )= withContext(Dispatchers.IO){updateProfileRepository.updateWebAddress(contactID,url,priority, id)}
 
-    private suspend fun createMailAsync(
+    private suspend fun deleteWebAddress(
         contactID: Int,
-        address: String,
+        url: String,
         priority: Int,
         id: Int
-    )= withContext(Dispatchers.IO){createContactRepository.createMail(contactID, address, priority, id)}
+    ) = withContext(Dispatchers.IO){deleteContactRepository.deleteWebAddress(contactID, url, priority, id)}
+
+    private suspend fun createWebAddress(
+        contactID: Int,
+        url: String,
+        priority: Int,
+        id: Int
+    )= withContext(Dispatchers.IO){createContactRepository.createWebAddress(contactID, url, priority, id)}
+
+    private suspend fun getAllEmailsAsync(
+        contactID: Int,
+        page: Int,
+        pageSize: Int
+    )= withContext(Dispatchers.IO){getAllEmailsRepository.getAllEmails(contactID,page,pageSize)}
+
+    private suspend fun getAllPhonesAsync(
+        contactID: Int,
+        page: Int,
+        pageSize: Int
+    ) = withContext(Dispatchers.IO){getAllPhonesRepository.getAllPhones(contactID, page, pageSize)}
+
+    private suspend fun getAllAddressAsync(
+        contactID: Int,
+        page: Int,
+        pageSize: Int
+    )= withContext(Dispatchers.IO){getAllAddressRepository.getAllAddress(contactID, page, pageSize)}
+
+    private suspend fun getAllWebAddressAsync(
+        contactID: Int,
+        page: Int,
+        pageSize: Int
+    )= withContext(Dispatchers.IO){getAllWebAddressRepository.getAllWebAddress(contactID, page, pageSize)}
+
+    private suspend fun getAllCountryAsync(
+        addressBookID: Int,
+        page: Int,
+        pageSize: Int
+    ) = withContext(Dispatchers.IO){getAllCountryRepository.getAllCountry(addressBookID, page, pageSize)}
+
+    private suspend fun getAllCityAsync(
+        parentID: Int,
+        page: Int,
+        pageSize: Int
+    ) = withContext(Dispatchers.IO){getAllCityRepository.getAllCity(parentID, page, pageSize)}
+
+    private suspend fun getAllCountyAsync(
+        parentID: Int,
+        page: Int,
+        pageSize: Int
+    ) = withContext(Dispatchers.IO){getAllCountyRepository.getAllCounty(parentID, page, pageSize)}
+
+    private suspend fun createAddress(
+        createAddressBody: CreateAddressBody
+    ) = withContext(Dispatchers.IO){createContactRepository.createAddress(createAddressBody)}
+
+    private suspend fun deleteAddress(
+        deleteAddressBody: CreateAddressBody
+    ) = withContext(Dispatchers.IO){deleteContactRepository.deleteAddress(deleteAddressBody)}
+
+    private suspend fun updateAddress(
+        updateAddressBody: CreateAddressBody
+    ) = withContext(Dispatchers.IO){updateProfileRepository.updateAddress(updateAddressBody)}
 }

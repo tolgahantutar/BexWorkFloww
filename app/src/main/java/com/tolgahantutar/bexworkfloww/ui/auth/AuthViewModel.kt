@@ -8,9 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tolgahantutar.bexworkfloww.data.network.repositories.AuthorizeSessionRepository
-import com.tolgahantutar.bexworkfloww.data.network.repositories.GetDomainRepository
-import com.tolgahantutar.bexworkfloww.data.network.repositories.GetUserRepository
-import com.tolgahantutar.bexworkfloww.data.network.responses.GetUserResponse
+import com.tolgahantutar.bexworkfloww.data.network.repositories.getrepository.GetDomainRepository
+import com.tolgahantutar.bexworkfloww.data.network.repositories.getrepository.GetUserRepository
+import com.tolgahantutar.bexworkfloww.data.network.responses.getresponses.GetUserResponse
 import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonAuthID
 import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonDomainKey
 import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonUserAPI
@@ -18,12 +18,12 @@ import com.tolgahantutar.bexworkfloww.ui.home.HomeActivity
 import kotlinx.coroutines.*
 
 class AuthViewModel @ViewModelInject constructor (
-   private val authorizeSessionRepository: AuthorizeSessionRepository,
-   private val getDomainRepository: GetDomainRepository,
-   private val getUserRepository: GetUserRepository,
-   private val sharedPrefSingletonAuthID: SharedPrefSingletonAuthID,
-   private val sharedPrefSingletonDomainKey: SharedPrefSingletonDomainKey,
-   private val sharedPrefSingletonUserAPI: SharedPrefSingletonUserAPI
+    private val authorizeSessionRepository: AuthorizeSessionRepository,
+    private val getDomainRepository: GetDomainRepository,
+    private val getUserRepository: GetUserRepository,
+    private val sharedPrefSingletonAuthID: SharedPrefSingletonAuthID,
+    private val sharedPrefSingletonDomainKey: SharedPrefSingletonDomainKey,
+    private val sharedPrefSingletonUserAPI: SharedPrefSingletonUserAPI
 ):ViewModel() {
     var userName :String?=null
     var password: String ? = null

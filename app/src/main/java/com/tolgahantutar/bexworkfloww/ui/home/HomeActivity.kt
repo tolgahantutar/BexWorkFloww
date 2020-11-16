@@ -6,10 +6,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.iterator
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.tolgahantutar.bexworkfloww.R
 import com.tolgahantutar.bexworkfloww.databinding.ActivityHomeBinding
+import com.tolgahantutar.bexworkfloww.ui.editprofile.EditProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_home.*
 
@@ -19,6 +21,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var binding : ActivityHomeBinding
     private lateinit var editProfile: ImageView
     private val homeActivityViewModel: HomeActivityViewModel by viewModels()
+    private val editProfileViewModel : EditProfileViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
          binding = DataBindingUtil.setContentView(this,R.layout.activity_home)
@@ -41,6 +44,11 @@ class HomeActivity : AppCompatActivity() {
             navController.navigate(R.id.editProfileFragment)
             drawer_layout.closeDrawers()
         }
+    editProfileViewModel.isRefreshFragment.observe(this, Observer {
+        if(it){
+            navController.navigate(R.id.inboxFragment)
+        }
+    })
     }
     override fun onSupportNavigateUp(): Boolean {
         return NavigationUI.navigateUp(

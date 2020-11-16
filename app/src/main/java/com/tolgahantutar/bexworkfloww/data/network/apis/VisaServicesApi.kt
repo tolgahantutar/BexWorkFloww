@@ -1,15 +1,7 @@
 package com.tolgahantutar.bexworkfloww.data.network.apis
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.tolgahantutar.bexworkfloww.data.network.responses.AuthorizeSessionResponse
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import com.tolgahantutar.bexworkfloww.data.network.responses.updateresponses.AuthorizeSessionResponse
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST

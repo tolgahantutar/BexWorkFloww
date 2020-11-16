@@ -4,16 +4,16 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tolgahantutar.bexworkfloww.data.network.repositories.GetContactRepository
-import com.tolgahantutar.bexworkfloww.data.network.responses.GetContactResponse
+import com.tolgahantutar.bexworkfloww.data.network.repositories.getrepository.GetContactRepository
+import com.tolgahantutar.bexworkfloww.data.network.responses.getresponses.GetContactResponse
 import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonUserAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AdressBookViewModel @ViewModelInject constructor(
-private val getContactRepository: GetContactRepository,
-private val sharedPrefSingletonUserAPI: SharedPrefSingletonUserAPI
+    private val getContactRepository: GetContactRepository,
+    private val sharedPrefSingletonUserAPI: SharedPrefSingletonUserAPI
 ): ViewModel(){
     val mutableGetContactResponse = MutableLiveData<GetContactResponse>()
     fun executeGetContact() {
