@@ -13,6 +13,7 @@ import com.tolgahantutar.bexworkfloww.data.network.repositories.getrepository.Ge
 import com.tolgahantutar.bexworkfloww.data.network.responses.getresponses.GetUserResponse
 import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonAuthID
 import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonDomainKey
+import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonLoggedUsername
 import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonUserAPI
 import com.tolgahantutar.bexworkfloww.ui.home.HomeActivity
 import kotlinx.coroutines.*
@@ -23,7 +24,8 @@ class AuthViewModel @ViewModelInject constructor (
     private val getUserRepository: GetUserRepository,
     private val sharedPrefSingletonAuthID: SharedPrefSingletonAuthID,
     private val sharedPrefSingletonDomainKey: SharedPrefSingletonDomainKey,
-    private val sharedPrefSingletonUserAPI: SharedPrefSingletonUserAPI
+    private val sharedPrefSingletonUserAPI: SharedPrefSingletonUserAPI,
+    private val sharedPrefSingletonLoggedUsername: SharedPrefSingletonLoggedUsername
 ):ViewModel() {
     var userName :String?=null
     var password: String ? = null
@@ -54,14 +56,20 @@ class AuthViewModel @ViewModelInject constructor (
                 isLoading.value = true
                     val authResponse = userLogin(sessionID,authorityID,userName!!,password!!,loginType)
                     isAuthExists.value=true
-                    authID.value=authResponse.authorizeSessionModel!!.ID
-                    sharedPrefSingletonAuthID.setSomeStringValue(authID.value!!)
+                    authID.value=authResponse.authorizeSessionModel?.let {
+                        it.ID
+                    }
+                    if(authID.value!=null){
+                        sharedPrefSingletonAuthID.setSomeStringValue(authID.value!!)
+                    }
+
                 if(authResponse.Result){
                     isLoading.value=false
                     val domainResponse=getDomain(location)
                     isDomainExists.value=true
                     domainKey.value = domainResponse.getDomainModel.ApiKey
                     sharedPrefSingletonDomainKey.setSomeStringValue(domainKey.value)
+                    sharedPrefSingletonLoggedUsername.setSomeStringValue("${authResponse.authorizeSessionModel!!.UserFirstName.subSequence(0,1)}"+"${authResponse.authorizeSessionModel.UserLastName.subSequence(0,1)}")
                     val getUserResponse = getUser(authResponse.authorizeSessionModel.ID,"Bearer "+domainResponse.getDomainModel.ApiKey)
                     getUserResponseMutable.value = getUserResponse
                     sharedPrefSingletonUserAPI.setSomeStringValue(getUserResponseMutable.value?.getUserValue?.apiKey)

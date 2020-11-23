@@ -6,6 +6,8 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class HomeActivityViewModel @ViewModelInject constructor():ViewModel() {
+class HomeActivityViewModel @ViewModelInject constructor(
+
+):ViewModel() {
 
 }

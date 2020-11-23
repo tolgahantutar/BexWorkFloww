@@ -1,13 +1,17 @@
 package com.tolgahantutar.bexworkfloww.ui.editprofile
 
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
-import android.text.*
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
 import android.view.*
-import android.view.ViewGroup
-import android.widget.*
 import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,6 +22,7 @@ import com.tolgahantutar.bexworkfloww.data.models.InputEditTextModel
 import com.tolgahantutar.bexworkfloww.databinding.EditProfileFragmentBinding
 import com.tolgahantutar.bexworkfloww.ui.customedittexts.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.edit_profile_fragment.*
 
 
 @Suppress("DEPRECATION")
@@ -49,11 +54,22 @@ class EditProfileFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
+    @SuppressLint("SetTextI18n")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val linearLayout = requireView().findViewById<LinearLayout>(R.id.edit_profile_linear_layout)
         setProgressDialog()
         editProfileViewModel.executeUserResponse()
+        editProfileViewModel.getUserResponseMutable.observe(viewLifecycleOwner, Observer {
+            if (it.result) {
+                profile_image_text.text = "${it.getUserValue.firstName.subSequence(0, 1)}" + "${
+                    it.getUserValue.lastName.subSequence(
+                        0,
+                        1
+                    )
+                }"
+            }
+        })
         editProfileViewModel.getAllEmailResponseMutable.observe(viewLifecycleOwner, Observer {
             var x = 0
             while (x < it.totalRowsCount) {
@@ -93,7 +109,7 @@ class EditProfileFragment : Fragment() {
                 updateMailEditText.isFocusableInTouchMode = false
                 updateMailEditText.layoutParams = mailEditTextParams
                 updateMailEditText.setText(it.getAllEmailsResponse[x].address)
-                val emailListElement = InputEditTextModel(textInputLayout,updateMailEditText)
+                val emailListElement = InputEditTextModel(textInputLayout, updateMailEditText)
                 emailList.add(emailListElement)
                 emailList[x].textInputLayout.addView(emailList[x].textInputEditText)
                 linearLayout.addView(emailList[x].textInputLayout)
@@ -113,7 +129,12 @@ class EditProfileFragment : Fragment() {
             mailTextInputLayoutParams.setMargins(0, 0, 0, 10)
             mailTextInputLayout.layoutParams = mailTextInputLayoutParams
 
-            val mailTextInputEditText = CreateMailEditText(requireContext(),editProfileViewModel,requireView(),action)
+            val mailTextInputEditText = CreateMailEditText(
+                requireContext(),
+                editProfileViewModel,
+                requireView(),
+                action
+            )
             val mailTextInputEditTextParams: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -171,7 +192,7 @@ class EditProfileFragment : Fragment() {
                 updatePhoneEditText.isFocusableInTouchMode = false
                 updatePhoneEditText.layoutParams = phoneEditTextParams
                 updatePhoneEditText.setText(it.getAllPhonesValue[x].cleanBody)
-                val phoneListElement = InputEditTextModel(textInputLayout,updatePhoneEditText)
+                val phoneListElement = InputEditTextModel(textInputLayout, updatePhoneEditText)
                 phoneList.add(phoneListElement)
                 phoneList[x].textInputLayout.addView(phoneList[x].textInputEditText)
                 linearLayout.addView(phoneList[x].textInputLayout)
@@ -191,7 +212,12 @@ class EditProfileFragment : Fragment() {
             phoneTextInputLayoutParams.setMargins(0, 0, 0, 10)
             phoneTextInputLayout.layoutParams = phoneTextInputLayoutParams
 
-            val phoneTextInputEditText = CreatePhoneEditText(requireContext(),editProfileViewModel,requireView(),action)
+            val phoneTextInputEditText = CreatePhoneEditText(
+                requireContext(),
+                editProfileViewModel,
+                requireView(),
+                action
+            )
             val phoneTextInputEditTextParams: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -205,9 +231,11 @@ class EditProfileFragment : Fragment() {
             phoneTextInputEditText.compoundDrawablePadding = 10
             phoneTextInputEditText.inputType = InputType.TYPE_CLASS_PHONE
             phoneTextInputEditText.layoutParams = phoneTextInputEditTextParams
-
+            phoneTextInputEditText.addTextChangedListener(phoneTextWatcher)
             phoneTextInputLayout.addView(phoneTextInputEditText)
             linearLayout.addView(phoneTextInputLayout)
+
+
         })
         editProfileViewModel.getAllAddressResponseMutable.observe(viewLifecycleOwner, Observer {
             var x = 0
@@ -256,7 +284,7 @@ class EditProfileFragment : Fragment() {
                 updateAddressEditText.isFocusableInTouchMode = false
                 updateAddressEditText.layoutParams = textInputEditTextParams
                 updateAddressEditText.setText(it.getAllAddressResponse[x].displayBody)
-                val addressListElement = InputEditTextModel(textInputLayout,updateAddressEditText)
+                val addressListElement = InputEditTextModel(textInputLayout, updateAddressEditText)
                 addressList.add(addressListElement)
                 addressList[x].textInputLayout.addView(addressList[x].textInputEditText)
                 linearLayout.addView(addressList[x].textInputLayout)
@@ -276,7 +304,13 @@ class EditProfileFragment : Fragment() {
             addressTextInputLayoutParams.setMargins(0, 0, 0, 10)
             addressTextInputLayout.layoutParams = addressTextInputLayoutParams
 
-            val adressTextInputEditText = CreateAddressEditText(requireContext(),editProfileViewModel,viewLifecycleOwner,requireView(),action)
+            val adressTextInputEditText = CreateAddressEditText(
+                requireContext(),
+                editProfileViewModel,
+                viewLifecycleOwner,
+                requireView(),
+                action
+            )
             val adressTextInputEditTextParams: LinearLayout.LayoutParams =
                 LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -337,7 +371,10 @@ class EditProfileFragment : Fragment() {
                 updateWebAddressEditText.isSingleLine = false
                 updateWebAddressEditText.layoutParams = textInputEditTextParams
                 updateWebAddressEditText.setText(it.getAllWebAddressValue[x].url)
-                val webAddressListElement = InputEditTextModel(textInputLayout,updateWebAddressEditText)
+                val webAddressListElement = InputEditTextModel(
+                    textInputLayout,
+                    updateWebAddressEditText
+                )
                 webAddressList.add(webAddressListElement)
                 webAddressList[x].textInputLayout.addView(webAddressList[x].textInputEditText)
                 linearLayout.addView(webAddressList[x].textInputLayout)
@@ -358,7 +395,12 @@ class EditProfileFragment : Fragment() {
             webAddressTextInputLayoutParams.setMargins(0, 0, 0, 10)
             webAddressTextInputLayout.layoutParams = webAddressTextInputLayoutParams
 
-            val webAddressTextInputEditText = CreateWebAddressEditText(requireContext(),editProfileViewModel,requireView(),action)
+            val webAddressTextInputEditText = CreateWebAddressEditText(
+                requireContext(),
+                editProfileViewModel,
+                requireView(),
+                action
+            )
             val phoneTextInputEditTextParams: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -376,7 +418,7 @@ class EditProfileFragment : Fragment() {
             linearLayout.addView(webAddressTextInputLayout)
         })
         editProfileViewModel.isProgressBarDismissed.observe(viewLifecycleOwner, Observer {
-            if(it){
+            if (it) {
                 dialog.dismiss()
             }
         })
@@ -430,4 +472,26 @@ class EditProfileFragment : Fragment() {
             dialog.window!!.attributes = layoutParams
         }
     }
+    val phoneTextWatcher = (object: TextWatcher{
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+        }
+
+        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            if(p0!!.lastIndex<p1){
+                if(p0.toString()[p1-1]=='0'|| p0.toString()[p1-1]=='1'){
+                    Toast.makeText(requireContext(), "Son girilen değer 0 veya 1'dir.", Toast.LENGTH_SHORT).show()
+                }
+            }else {
+                if (p0.toString()[p1] != '0' || p0.toString()[p1] != '1' || p0.toString()[p1]!='2'|| p0.toString()[p1]!='3'|| p0.toString()[p1]!='4'|| p0.toString()[p1]!='5'|| p0.toString()[p1]!='6'|| p0.toString()[p1]!='7'|| p0.toString()[p1]!='8'|| p0.toString()[p1]!='9'|| p0.toString()[p1]!='0'|| p0.toString()[p1]!='+'|| p0.toString()[p1]!='*'|| p0.toString()[p1]!='#') {
+
+                }
+            }
+        }
+
+        override fun afterTextChanged(p0: Editable?) {
+
+        }
+
+    })
 }

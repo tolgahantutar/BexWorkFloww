@@ -32,7 +32,7 @@ class InboxFragment : Fragment() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val intent = Intent(activity, LoginActivity::class.java)
         when(item.itemId){
             R.id.item_logout -> {
@@ -46,5 +46,5 @@ class InboxFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.profile_menu, menu)
-    }
+    }*/
 }

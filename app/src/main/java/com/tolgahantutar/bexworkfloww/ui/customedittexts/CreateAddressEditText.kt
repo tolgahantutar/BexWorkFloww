@@ -179,6 +179,7 @@ class CreateAddressEditText constructor(
                                 }
 
                             val displayAddressEditText = EditText(context)
+                            displayAddressEditText.inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
                             displayAddressEditText.hint = context.getString(R.string.enter_address)
                             val priorityAddressEditText = EditText(context)
                             priorityAddressEditText.hint = (context.getString(R.string.enter_priority))
@@ -206,7 +207,13 @@ class CreateAddressEditText constructor(
                                         displayAddressEditText.text.toString(),
                                         priorityAddressEditText.text.toString().toInt()
                                     )
-                                    Navigation.findNavController(view).navigate(action)
+                                    editProfileViewModel.createAddressResponseMutable.observe(viewLifecycleOwner,
+                                        Observer {
+                                            if (it.result){
+                                                Navigation.findNavController(view).navigate(action)
+                                            }
+                                        })
+
                                 })
                             builder.setNegativeButton(context.getString(R.string.cancel),
                                 DialogInterface.OnClickListener { dialog, _ ->

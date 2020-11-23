@@ -86,7 +86,6 @@ class UpdateAddressEditText constructor(
                             p0!!.selectedItem as CustomCityModel
                          countryIDUpdate= selectedCountry.id
                         countryNameUpdate = selectedCountry.name
-                        Toast.makeText(context, "$countryID", Toast.LENGTH_SHORT).show()
                     }
 
                     override fun onNothingSelected(p0: AdapterView<*>?) {

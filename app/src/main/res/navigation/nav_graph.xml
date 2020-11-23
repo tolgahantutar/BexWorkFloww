@@ -40,4 +40,9 @@
             app:popUpTo="@id/editProfileFragment"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.tolgahantutar.bexworkfloww.ui.settings.SettingsFragment"
+        android:label="Ayarlar"
+        tools:layout="@layout/settings_fragment" />
 </navigation>

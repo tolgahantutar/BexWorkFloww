@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.material.textfield.TextInputEditText
@@ -16,6 +17,8 @@ import com.google.android.material.textfield.TextInputLayout
 import com.tolgahantutar.bexworkfloww.R
 import com.tolgahantutar.bexworkfloww.data.models.InputEditTextModel
 import com.tolgahantutar.bexworkfloww.data.models.getcontact.GetContactValue
+import com.tolgahantutar.bexworkfloww.data.sharedpref.SharedPrefSingletonLoggedUsername
+import com.tolgahantutar.bexworkfloww.databinding.UserDetailAddressFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.user_detail_address_fragment.*
 
@@ -25,7 +28,6 @@ class UserDetailAddressFragment : Fragment() {
     private var userDetail : GetContactValue ? = null
     private val userDetailAddressViewModel: UserDetailAddressViewModel by viewModels()
 
-
     private var emailList = ArrayList<InputEditTextModel>()
     private var phoneList = ArrayList<InputEditTextModel>()
     private var addressList = ArrayList<InputEditTextModel>()
@@ -34,7 +36,8 @@ class UserDetailAddressFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.user_detail_address_fragment, container, false)
+        val binding: UserDetailAddressFragmentBinding = DataBindingUtil.inflate(inflater,R.layout.user_detail_address_fragment,container,false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -44,6 +47,7 @@ class UserDetailAddressFragment : Fragment() {
         it
         ).GetContactDetail
             textview_username.text=userDetail?.name
+            user_profile_text_left_drawable.setText("${(userDetail!!.displayName.substringBefore(" ")).subSequence(0,1)}"+"${(userDetail!!.displayName.substringAfter(" ").subSequence(0,1))}")
         }
         userDetailAddressViewModel.getAllEmail(userDetail!!.defaultEmail.contactId.toInt())
         userDetailAddressViewModel.getAllPhone(userDetail!!.defaultPhone.contactId.toInt())

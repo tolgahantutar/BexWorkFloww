@@ -55,6 +55,7 @@ class EditProfileViewModel @ViewModelInject constructor(
     val getAllCityResponseMutable = MutableLiveData<GetAllCityResponse>()
     val getAllCountyResponseMutable = MutableLiveData<GetAllCountyResponse>()
     val isProgressBarDismissed = MutableLiveData<Boolean>(false)
+    val createAddressResponseMutable = MutableLiveData<CreateAddressResponse>()
     //Email
     private var emailContactID: Int = 0
     private var emailPriority : Int = 0
@@ -140,6 +141,7 @@ class EditProfileViewModel @ViewModelInject constructor(
         )
         viewModelScope.launch {
             val createAddressResponse: CreateAddressResponse = createAddress(createAddressBody)
+            createAddressResponseMutable.value = createAddressResponse
             if(createAddressResponse.result){
                 Toast.makeText(context, "Address Created Successfully", Toast.LENGTH_SHORT).show()
             }

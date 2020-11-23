@@ -7,62 +7,83 @@
             name="HomeViewModel"
             type="com.tolgahantutar.bexworkfloww.ui.home.HomeActivityViewModel" />
     </data>
-    <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:background="#252434"
-    android:orientation="vertical"
-    android:gravity="center">
-    <ImageView
-        android:layout_marginTop="25dp"
-        android:id="@+id/user_profile_image_header"
-        android:layout_width="60dp"
-        android:layout_height="63dp"
-        app:srcCompat="@drawable/userimage"
-        android:contentDescription="@string/todo" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="#252434"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/user_profile_image_header"
+            android:layout_width="60dp"
+            android:layout_height="63dp"
+            android:layout_marginTop="25dp"
+            android:contentDescription="@string/todo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/userimage"
+            android:layout_marginBottom="35dp"/>
 
         <TextView
             android:id="@+id/username_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/bexfa_administrator"
             android:layout_marginTop="5dp"
+            android:layout_marginBottom="19dp"
+            android:text="@string/bexfa_administrator"
             android:textColor="#f5f5f5"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/items_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_profile_image_header" />
+
         <LinearLayout
+            android:id="@+id/items_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal"
             android:layout_marginTop="19dp"
-            >
+            android:layout_marginBottom="10dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
             <ImageView
                 android:id="@+id/inbox_header"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/inbox_jobs_hr"
                 android:layout_marginEnd="20dp"
-                android:contentDescription="@string/todo" />
+                android:contentDescription="@string/todo"
+                android:src="@drawable/inbox_jobs_hr" />
+
             <ImageView
                 android:id="@+id/calendar_header"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/calendar_hr"
                 android:layout_marginEnd="20dp"
-                android:contentDescription="@string/todo" />
+                android:contentDescription="@string/todo"
+                android:src="@drawable/calendar_hr" />
+
             <ImageView
                 android:id="@+id/contacts_header"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/contacts_hr"
                 android:layout_marginEnd="20dp"
-                android:contentDescription="@string/todo" />
+                android:contentDescription="@string/todo"
+                android:src="@drawable/contacts_hr" />
+
             <ImageView
                 android:id="@+id/notes_header"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/notes_hr"
-                android:contentDescription="@string/todo" />
+                android:contentDescription="@string/todo"
+                android:src="@drawable/notes_hr" />
         </LinearLayout>
-</LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
